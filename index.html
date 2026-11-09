@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FFFFFF">
+<title>Naš mali svet</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito:wght@400;700;800&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="#danes"><i></i>naš mali svet</a><div class="right" id="net"></div></div></header>
+<main id="app"><section class="page wrap"><p>Nalagam …</p></section></main>
+<nav class="tabs" aria-label="Glavni meni">
+  <a href="#danes" data-v="danes"><span>☀️</span>Danes</a>
+  <a href="#nacrt" data-v="nacrt"><span>🗺️</span>Načrt</a>
+  <a href="#blizu" data-v="blizu"><span>📍</span>Blizu</a>
+  <a href="#prado" data-v="prado"><span>🕵️</span>Prado</a>
+  <a href="#vec" data-v="vec"><span>☰</span>Več</a>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+<script src="plan.js"></script>
+<script src="prado.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
