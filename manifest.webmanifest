@@ -1,8 +1,8 @@
 {
   "name": "Naš mali svet",
   "short_name": "Naš svet",
-  "description": "Družinski spremljevalec za vikend v mestu: načrt, vreme, kaj je blizu in igra v muzeju.",
-  "start_url": "./#danes",
+  "description": "Družinski spremljevalec za vikend v mestu: kam zdaj, ideje, vreme in igra v muzeju.",
+  "start_url": "./#zdaj",
   "scope": "./",
   "display": "standalone",
   "background_color": "#F3F5F2",
