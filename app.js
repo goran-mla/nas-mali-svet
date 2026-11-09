@@ -124,6 +124,7 @@ function hoursToday(p, d) {
   return { segs, text: v.replace(/-/g, '–').replace(/,/g, ', ') };
 }
 function openState(p, d) {
+  if (p.from && d < new Date(p.from + 'T00:00')) return { open: false, text: 'odpre se ' + p.from.split('-').reverse().slice(0, 2).map(Number).join('. ') + '.' };
   const h = hoursToday(p, d);
   if (h.always) return { open: true, left: 9999, text: h.text || '' };
   if (h.closed) return { open: false, text: 'danes zaprto' };
@@ -345,7 +346,7 @@ function vIdeje() {
     <div class="row"><button class="toggle" data-act="iin" aria-pressed="${ideaIn}"><span>Pod streho</span><span class="sw"></span></button><button class="toggle" data-act="iopen" aria-pressed="${ideaOpen}"><span>Odprto zdaj</span><span class="sw"></span></button></div>
     <div class="ideas">${list.map(({ p, d, st }) => `<details class="card idea" data-id="${p.id}"><summary>
         ${p.img ? `<img src="${p.img[0]}" alt="" loading="lazy">` : `<span class="ic c-${p.cat}">${CATS[p.cat][0]}</span>`}
-        <span class="tx"><b>${want.includes(p.id) ? '⭐ ' : ''}${esc(p.name)}${done.includes(p.id) ? ' ✔' : ''}</b><small>${esc(p.what)}</small><small class="${st.open ? 'op' : 'cl'}">${st.open ? 'odprto' : st.opensIn != null ? 'odpre ob ' + fmtT(now.getHours() * 60 + now.getMinutes() + st.opensIn) : 'zdaj zaprto'} · ${fmtDist(d)}</small></span></summary>
+        <span class="tx"><b>${want.includes(p.id) ? '⭐ ' : ''}${esc(p.name)}${done.includes(p.id) ? ' ✔' : ''}</b><small>${esc(p.what)}</small><small class="${st.open ? 'op' : 'cl'}">${st.open ? 'odprto' : st.opensIn != null ? 'odpre ob ' + fmtT(now.getHours() * 60 + now.getMinutes() + st.opensIn) : /^odpre se/.test(st.text) ? st.text : 'zdaj zaprto'} · ${fmtDist(d)}</small></span></summary>
         <div class="body">
           ${p.kidWhy ? `<p class="kidwhy" style="margin-top:0"><b>Za otroka:</b> ${esc(p.kidWhy)}</p>` : ''}
           ${metaLine(p, st)}
