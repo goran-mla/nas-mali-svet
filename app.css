@@ -225,3 +225,24 @@ input[type=datetime-local],select{font:inherit;width:100%;border:1px solid var(-
 .chips.scroll .chip{flex:none}
 .map{height:calc(100vh - 250px)}
 .unv{margin:10px 0 0;font-size:12.5px;color:var(--muted)}
+.wishcard{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.wishcard.on{background:var(--gold-soft);border-color:var(--gold)}
+.wishcard>span:first-child{font-size:26px;text-align:center}
+.wishcard b{font-family:var(--display);display:block}
+.wishcard small{color:var(--muted);font-size:13px}
+.wishcard .go{font-size:24px;color:var(--muted)}
+.tl2{display:flex;flex-direction:column;gap:0;border-left:3px solid var(--gold);margin-left:22px}
+.tli{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;padding:8px 0 14px;margin-left:-28px}
+.tli .tt{background:var(--ink);color:#fff;border-radius:999px;font:800 13px var(--display);height:28px;display:flex;align-items:center;justify-content:center}
+.tli .tb{display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.tli .tb b{font-family:var(--display);font-size:17px}
+.tli .tb small{color:var(--muted);font-size:13px}
+.tli .tb small.cl{color:var(--red)}
+.tli.lunch .tb{background:var(--gold-soft)}
+.tli.rest .tb{background:var(--sky-soft)}
+.tli .btn{min-height:36px;padding:6px 10px}
+.wl{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.wl span{display:inline-flex;align-items:center;gap:6px;background:var(--gold-soft);border-radius:999px;padding:4px 6px 4px 10px;font-weight:800;font-size:13px}
+.wl button{border:0;background:rgba(0,0,0,.08);border-radius:50%;width:22px;height:22px;font-size:11px;padding:0}
+.wishcard .mlist{display:flex;flex-direction:column;gap:2px;margin-top:4px;color:var(--ink)}
+.wishcard .mlist b{display:inline;font-size:13px;margin-right:4px}

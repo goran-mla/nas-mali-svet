@@ -193,7 +193,7 @@ function suggest(md = mood) {
     if (p.cat === 'razgled' && m < sun && sun - m < 80) { s += far ? 4 : 12; why.push('🌇 kmalu sončni zahod'); }
     if (tired) { if (p.dur > 90) s -= 18; if ((p.tags || []).includes('sedi')) { s += 10; why.push('🪑 sedite'); } }
     if (p.dur > budget + 30) s -= 25;
-    if (want.has(p.id)) { s += 22; why.push('⭐ na seznamu želja'); }
+    if (want.has(p.id) && !done.has(p.id)) { if (!far && w <= 15) { s += 60; why.unshift('⭐ vaša želja, čisto blizu'); } else { s += 22; why.push('⭐ na seznamu želja'); } }
     if (done.has(p.id)) { s -= 70; why.push('že obiskano'); }
     if (p.fb) why.push('⚽ nogometna zgodba');
     if (p.quiz && p.quiz.length) why.push('❓ kviz');
@@ -214,6 +214,87 @@ function suggest(md = mood) {
     return top.concat(out.filter(r => !top.includes(r)));
   }
   return out;
+}
+
+/* ---------- day plan from wishes ---------- */
+const todayKey = () => new Date().toISOString().slice(0, 10);
+function skipToday() { const x = LS.get('skipday', { d: '', ids: [] }); return x.d === todayKey() ? x.ids : []; }
+const travelMin = (a, b) => { const d = dist(a, b), w = walkMin(d); return w <= 20 ? { min: w, mode: 'walking' } : { min: Math.min(40, 12 + Math.round(d / 1000 * 2.5)), mode: 'transit' }; };
+function segsToday(p, d) {
+  const st = openState(p, d);
+  if (/^(odpre se|od |končano)/.test(st.text || '')) return [];
+  const h = hoursToday(p, d);
+  if (h.always) return [[0, 1440 + 120]];
+  if (h.closed) return [];
+  return h.segs;
+}
+function dayPlan() {
+  const now = new Date(), nowM = now.getHours() * 60 + now.getMinutes();
+  let t = Math.ceil(Math.max(nowM, 9 * 60 + 30) / 5) * 5;
+  const h = here(), startLL = (nowM < 10 * 60 + 30 && h.src !== 'gps') ? HOTEL.ll : h.ll;
+  const done = new Set(LS.get('done', [])), sk = new Set(skipToday()), wet = isWet(), rest = LS.get('rest', true);
+  const an = anchors().find(a => a.t.toDateString() === now.toDateString() && a.t > now);
+  const endM = an ? an.t.getHours() * 60 + an.t.getMinutes() - (an.lead || 60) : 21 * 60 + 30;
+  const wishes = LS.get('want', []).map(byId).filter(p => p && p.id !== '_splosno' && !done.has(p.id));
+  const notToday = [];
+  let pool = wishes.filter(p => !sk.has(p.id)).filter(p => { if (!segsToday(p, now).length) { notToday.push({ p, why: openState(p, now).text || 'danes zaprto' }); return false; } return true; });
+  const span = p => segsToday(p, now).reduce((x, [a, b]) => x + Math.min(b, 1440) - a, 0);
+  const isFixed = p => p.cat === 'dogodek' || span(p) <= 300;
+  const fits = (p, arr, limit) => { for (const [a, b] of segsToday(p, now)) { const at = Math.max(arr, a); if (p.cat === 'dogodek' && arr > a + 10) continue; const d = Math.min(p.dur, 90); if (b - at >= Math.min(p.dur, 45) && at + d <= Math.min(endM + 10, limit ?? 9999)) return at; } return null; };
+  // phase 1: lock time-bound wishes
+  const fixed = [];
+  pool.filter(isFixed).sort((x, y) => segsToday(x, now)[0][0] - segsToday(y, now)[0][0]).forEach(p => {
+    for (const [a, b] of segsToday(p, now)) {
+      let at = Math.max(a, t + travelMin(startLL, p.ll).min);
+      if (p.cat === 'dogodek' && at > a + 10) continue;
+      while (fixed.some(f => at < f.end + 20 && at + p.dur + 20 > f.at) && at < b) at += 15;
+      if (at + Math.min(p.dur, 45) <= b && at + p.dur <= endM + 10) { fixed.push({ p, at, end: at + p.dur }); return; }
+    }
+  });
+  fixed.sort((x, y) => x.at - y.at);
+  pool = pool.filter(p => !fixed.some(f => f.p === p));
+  const out = [];
+  let cur = startLL, lunch = t > 14 * 60 + 30, rested = !rest || t > 16 * 60 + 30, guard = 0;
+  const nextF = () => fixed[0];
+  const tryRest = () => {
+    if (rested || !lunch || t >= 16 * 60) return;
+    const tr = travelMin(cur, HOTEL.ll), nf2 = nextF(), back = nf2 ? travelMin(HOTEL.ll, nf2.p.ll).min : 0;
+    const len = Math.min(90, nf2 ? nf2.at - back - (t + tr.min) - 5 : 90);
+    if (len >= 45) { out.push({ rest: true, at: t + tr.min, end: t + tr.min + len, tr }); t += tr.min + len; cur = HOTEL.ll; }
+    rested = true;
+  };
+  const pushFixed = () => { const f = fixed.shift(), tr = travelMin(cur, f.p.ll), at = Math.max(f.at, t + tr.min), dur = f.p.cat === 'hrana' ? Math.min(f.p.dur, 70) : f.p.dur; out.push({ p: f.p, at, end: at + dur, tr, wish: true, fixed: true, lunch: f.p.cat === 'hrana' && at >= 12 * 60 && at <= 15 * 60, wet: wet && f.p.set === 'out' }); t = at + dur; cur = f.p.ll; if (f.p.cat === 'hrana' && at >= 12 * 60 && at <= 15 * 60) { lunch = true; tryRest(); } };
+  while (guard++ < 30) {
+    const nf = nextF(), limit = nf ? nf.at - travelMin(cur, nf.p.ll).min - 5 : null;
+    if (!lunch && t >= 12 * 60 + 45) {
+      const lim = nf ? nf.at - 15 : 9999;
+      const opts = pool.filter(p => p.cat === 'hrana').map(p => ({ p, tr: travelMin(cur, p.ll), wish: true }))
+        .concat(PL.filter(p => p.cat === 'hrana' && p.kid >= 2 && !done.has(p.id) && !pool.includes(p)).map(p => ({ p, tr: travelMin(cur, p.ll), wish: false })).filter(x => x.tr.mode === 'walking' && x.tr.min <= 12))
+        .map(x => ({ ...x, at: fits(x.p, t + x.tr.min, lim) })).filter(x => x.at != null).sort((a, b) => (a.wish ? -20 : 0) + a.tr.min - ((b.wish ? -20 : 0) + b.tr.min));
+      const pick = opts[0];
+      if (pick && (!nf || pick.at + 50 <= nf.at)) { const dur = Math.min(pick.p.dur, 70, nf ? nf.at - pick.at - 10 : 70); out.push({ p: pick.p, at: pick.at, end: pick.at + dur, tr: pick.tr, lunch: true, wish: pick.wish }); t = pick.at + dur; cur = pick.p.ll; pool = pool.filter(x => x !== pick.p); lunch = true; }
+      else if (!nf || t + 60 > nf.at) { lunch = !nf ? true : lunch; if (nf) { pushFixed(); continue; } }
+      tryRest();
+      continue;
+    }
+    const cands = pool.map(p => {
+      const tr = travelMin(cur, p.ll), at = fits(p, t + tr.min, limit); if (at == null) return null;
+      if (!lunch && at < 12 * 60 + 45 && at + p.dur > 14 * 60 && p.cat !== 'hrana') return null;
+      return { p, tr, at, cost: (at - t) * 1.2 + (wet && p.set === 'out' ? 25 : 0) - (p.kid * 10 + (p.fb ? 8 : 0)) };
+    }).filter(Boolean).sort((a, b) => a.cost - b.cost);
+    if (!cands.length) {
+      if (!lunch && t < 12 * 60 + 45 && (!nf || nf.at > 12 * 60 + 45)) { t = 12 * 60 + 45; continue; }
+      if (nf) { pushFixed(); continue; }
+      break;
+    }
+    const c = cands[0];
+    out.push({ p: c.p, at: c.at, end: c.at + c.p.dur, tr: c.tr, wish: true, wet: wet && c.p.set === 'out' });
+    t = c.at + c.p.dur; cur = c.p.ll; pool = pool.filter(x => x !== c.p);
+    if (c.p.cat === 'hrana' && c.at >= 12 * 60 && c.at <= 14 * 60 + 30) { lunch = true; tryRest(); }
+  }
+  fixed.forEach(f => pool.push(f.p));
+  pool.forEach(p => notToday.push({ p, why: an && t >= endM - 30 ? 'ne izide se pred: ' + an.name : 'danes ne gre več v čas' }));
+  return { out, notToday, skipped: wishes.filter(p => sk.has(p.id)), an, endM, wishes, wet };
 }
 
 /* ---------- AI prompts ---------- */
@@ -307,6 +388,7 @@ function pickCard(r) {
         <button class="btn big" data-skip="${p.id}">↻ Drugo</button>
       </div>
       <div class="actions" style="margin-top:8px">
+        <button class="btn ${LS.get('want', []).includes(p.id) ? 'gold' : ''}" data-want="${p.id}">⭐ Želimo</button>
         <button class="btn" data-done="${p.id}">${done ? '✔ Obiskano' : '✔ Tu smo že bili'}</button>
         <a class="btn" target="_blank" rel="noopener" href="${maps(p.ll, p.q || p.name)}">📍 Zemljevid</a>
         ${links(p)}
@@ -354,6 +436,7 @@ function vZdaj() {
   return `<section class="page wrap">
     <div><span class="eyebrow">${WD[new Date().getDay()]} · ${hhmm(new Date())}</span><h1 class="title">Kam zdaj?</h1><button class="whereln" data-act="toloc">📍 ${esc(whereText())} <u>spremeni</u></button></div>
     ${anchorBanner()}
+    ${wishCard()}
     ${hereCard()}
     <div class="moods">${MOODS.map(([k, ic, l]) => `<button class="mood ${mood === k ? 'on' : ''}" data-mood="${k}"><span>${ic}</span>${esc(l)}</button>`).join('')}</div>
     <div class="row">
@@ -378,7 +461,8 @@ function vIdeje() {
   const cats = [['vse', 'Vse'], ['zelje', '⭐ Želje'], ['mama', '💐 Za mamo']].concat(Object.entries(CATS).map(([k, v]) => [k, v[0] + ' ' + v[1]]));
   return `<section class="page wrap">
     <div><span class="eyebrow">${PL.length} krajev · od ${esc(whereText())}</span><h1 class="title">Ideje</h1><p style="margin:4px 0 0;color:var(--muted)">Vse, kar je v aplikaciji. Označi ⭐, kar si želite; predlagalnik jih postavi višje.</p></div>
-    <div class="chips">${cats.map(([k, l]) => `<button class="chip ${ideaCat === k ? 'on' : ''}" data-icat="${k}">${l}</button>`).join('')}</div>
+    ${wishCard()}
+    <div class="chips">${cats.map(([k, l]) => `<button class="chip ${ideaCat === k ? 'on' : ''}" data-icat="${k}">${l}${k === 'zelje' ? ' ' + want.length : ''}</button>`).join('')}</div>
     <div class="chips scroll"><button class="chip ${ideaArea === 'vse' ? 'on' : ''}" data-iarea="vse">📍 Vsa področja</button>${AREAS.concat([{ id: 'drugo', short: 'Drugje' }]).filter(a => PL.some(p => areaOf(p).id === a.id)).map(a => `<button class="chip ${ideaArea === a.id ? 'on' : ''}" data-iarea="${a.id}">${esc(a.short)} <small>${PL.filter(p => areaOf(p).id === a.id).length}</small></button>`).join('')}</div>
     <div class="row"><button class="toggle" data-act="iin" aria-pressed="${ideaIn}"><span>Pod streho</span><span class="sw"></span></button><button class="toggle" data-act="iopen" aria-pressed="${ideaOpen}"><span>Odprto zdaj</span><span class="sw"></span></button></div>
     <div class="ideas">${list.map(({ p, d, st }) => `<details class="card idea" data-id="${p.id}"><summary>
@@ -398,6 +482,36 @@ function vIdeje() {
           ${details(p)}
         </div></details>`).join('') || '<p>Nič ne ustreza filtru.</p>'}</div>
   </section>`;
+}
+
+/* ---------- today view ---------- */
+function vDanes() {
+  const P = dayPlan(), n = P.wishes.length;
+  const row = x => x.rest ? `<div class="tli rest"><div class="tt num">${fmtT(x.at)}</div><div class="tb"><b>🏨 Počitek v hotelu</b><small>${x.tr.mode === 'walking' ? '🚶' : '🚇'} ${x.tr.min} min do hotela · do ${fmtT(x.end)}</small><div class="actions" style="margin-top:6px"><a class="btn" target="_blank" rel="noopener" href="${route(HOTEL.ll, x.tr.mode)}">Pot v hotel</a></div></div></div>`
+    : `<div class="tli ${x.lunch ? 'lunch' : ''}"><div class="tt num">${fmtT(x.at)}</div><div class="tb">
+      <small>${x.tr.mode === 'walking' ? '🚶' : '🚇'} ${x.tr.min} min${x.lunch ? ' · kosilo' + (x.wish ? '' : ' (predlog aplikacije)') : ''}${x.wet ? ' · ☔ zunaj' : ''}</small>
+      <b>${x.wish ? '⭐ ' : ''}${esc(x.p.name)}</b><small>${esc(x.p.what)}</small><small>do ${fmtT(x.end)} · ${esc(areaOf(x.p).short)}${x.p.price ? ' · ' + esc(x.p.price) : ''}</small>
+      ${x.p.warn ? `<small class="cl">⚠️ ${esc(x.p.warn)}</small>` : ''}
+      <div class="actions" style="margin-top:6px"><a class="btn primary" target="_blank" rel="noopener" href="${route(x.p.ll, x.tr.mode)}">🧭 Pot</a><button class="btn" data-done="${x.p.id}">✔ Bili smo</button>${x.wish ? `<button class="btn" data-skipday="${x.p.id}">✖ Danes ne</button>` : ''}<button class="btn" data-focus-go="${x.p.id}">Več</button></div></div></div>`;
+  return `<section class="page wrap">
+    <div><span class="eyebrow">${WD[new Date().getDay()]} · iz vaših želja</span><h1 class="title">Načrt za danes</h1>
+      <p style="margin:4px 0 0;color:var(--muted)">Uredim vaše ⭐ želje po odpiralnih časih, razdaljah in vremenu. Obiskano izpustim. Načrt se sproti posodablja.</p></div>
+    ${anchorBanner()}
+    ${!n ? `<div class="notice"><span>⭐</span><div><b>Še nimate želja.</b> V zavihku Ideje ali pri predlogu pritisnite ⭐ Želimo pri stvareh, ki jih res želite videti. Tu jih potem zložim v dan. <div class="actions"><a class="btn primary" href="#ideje" data-iwish="1">Odpri Ideje</a></div></div></div>` : ''}
+    ${P.wet ? '<div class="notice"><span>☔</span><div>Napoved kaže dež; stvari zunaj sem dal na konec ali označil.</div></div>' : ''}
+    <div class="row"><button class="toggle" data-act="rest" aria-pressed="${LS.get('rest', true)}"><span>🏨 Počitek po kosilu</span><span class="sw"></span></button></div>
+    ${P.out.length ? `<div class="tl2">${P.out.map(row).join('')}</div>` : n ? '<div class="notice"><span>🤷</span><div>Danes se nobena želja ne izide več. Poglejte Kam zdaj za predloge v bližini.</div></div>' : ''}
+    ${P.notToday.length ? `<div class="card"><div class="body"><span class="eyebrow">Ne gre danes</span><ul class="facts">${P.notToday.map(x => `<li><b>${esc(x.p.name)}</b>: ${esc(x.why)}</li>`).join('')}</ul></div></div>` : ''}
+    ${P.skipped.length ? `<p style="margin:0;font-size:13px;color:var(--muted)">Danes izpuščeno: ${P.skipped.map(p => esc(p.name)).join(', ')}. <button class="tag" data-act="unskipday">vrni</button></p>` : ''}
+    ${n ? `<div class="card"><div class="body"><span class="eyebrow">Vse vaše želje (${n})</span><div class="wl">${P.wishes.map(p => `<span>${esc(p.name)}<button data-want="${p.id}" aria-label="Odstrani">✕</button></span>`).join('')}</div><div class="actions"><a class="btn" href="#ideje" data-iwish="1">Dodaj še</a></div></div></div>` : ''}
+  </section>`;
+}
+function wishCard() {
+  const n = LS.get('want', []).filter(id => !LS.get('done', []).includes(id)).length;
+  if (!n) return `<a class="wishcard" href="#danes"><span>📅</span><span><b>Načrt za danes</b><small>Označite ⭐ želje v Idejah, pa vam jih zložim v dan.</small></span><span class="go">›</span></a>`;
+  const P = dayPlan(), nx = P.out.find(x => !x.rest);
+  const morning = new Date().getHours() < 12 && P.out.length;
+  return `<a class="wishcard on" href="#danes"><span>📅</span><span><b>${morning ? 'Dobro jutro! Danes predlagam' : 'Načrt za danes iz želja: ' + P.out.filter(x => !x.rest).length + ' postankov'}</b>${morning ? `<small class="mlist">${P.out.slice(0, 5).map(x => `<span><b class="num">${fmtT(x.at)}</b> ${x.rest ? '🏨 počitek' : esc(x.p.name)}</span>`).join('')}${P.out.length > 5 ? `<span>… še ${P.out.length - 5}</span>` : ''}</small>` : `<small>${nx ? 'Naslednje: ' + esc(nx.p.name) + ' ob ' + fmtT(nx.at) : 'Danes se nobena želja ne izide več.'}</small>`}</span><span class="go">›</span></a>`;
 }
 
 /* ---------- map ---------- */
@@ -424,7 +538,7 @@ function initMap() {
   PL.filter(p => (mapCat === 'vse' || p.cat === mapCat) && !(p.to && now > new Date(p.to + 'T23:59'))).forEach(p => {
     const st = openState(p, now);
     const m = L.marker(p.ll, { icon: L.divIcon({ className: 'pin c-' + p.cat + (st.open ? '' : ' shut'), html: CATS[p.cat][0], iconSize: [34, 34], iconAnchor: [17, 17] }) }).addTo(mapLayer);
-    m.bindPopup(`<b>${esc(p.name)}</b><br><small>${esc(p.what)}</small><br><small>${st.open ? '🟢 odprto' : '🔴 ' + esc(st.text || 'zdaj zaprto')}</small><br><a href="${route(p.ll, walkMin(dist(h.ll, p.ll)) > 22 ? 'transit' : 'walking')}" target="_blank" rel="noopener">🧭 Pot</a> · <a href="#" data-mapfocus="${p.id}">Predlagaj to</a>`);
+    m.bindPopup(`<b>${esc(p.name)}</b><br><small>${esc(p.what)}</small><br><small>${st.open ? '🟢 odprto' : '🔴 ' + esc(st.text || 'zdaj zaprto')}</small><br><a href="${route(p.ll, walkMin(dist(h.ll, p.ll)) > 22 ? 'transit' : 'walking')}" target="_blank" rel="noopener">🧭 Pot</a> · <a href="#" data-mapfocus="${p.id}">Predlagaj to</a> · <a href="#" data-mapwant="${p.id}">${LS.get('want', []).includes(p.id) ? '⭐ v željah' : '☆ Želimo'}</a>`);
   });
   L.marker(HOTEL.ll, { zIndexOffset: 1000, icon: L.divIcon({ className: 'pin hotel', html: '🏨', iconSize: [44, 44], iconAnchor: [22, 22] }) }).addTo(map).bindPopup(`<b>Naš hotel</b><br>${esc(HOTEL.name)}<br><small>${esc(HOTEL.addr)}</small>`);
   if (gpsInMadrid()) L.circleMarker([pos.lat, pos.lon], { radius: 9, color: '#fff', weight: 3, fillColor: '#2E6D9B', fillOpacity: 1 }).addTo(map).bindPopup('Tukaj ste');
@@ -526,7 +640,7 @@ function vVec() {
 }
 
 /* ---------- render & events ---------- */
-const VIEWS = { zdaj: vZdaj, ideje: vIdeje, zemljevid: vZemljevid, prado: vPrado, vec: vVec };
+const VIEWS = { zdaj: vZdaj, danes: vDanes, ideje: vIdeje, zemljevid: vZemljevid, prado: vPrado, vec: vVec };
 function view() { const h = location.hash.slice(1); return VIEWS[h] ? h : 'zdaj'; }
 function render(keepScroll) {
   const v = view(), y = window.scrollY;
@@ -534,11 +648,11 @@ function render(keepScroll) {
   $('#app').innerHTML = VIEWS[v]();
   open.forEach(id => { const d = document.querySelector(`details[data-id="${id}"]`); if (d) d.open = true; });
   if (v === 'zemljevid') initMap(); else if (map) { map.remove(); map = null; }
-  document.querySelectorAll('.tabs a').forEach(a => a.classList.toggle('on', a.dataset.v === v));
+  document.querySelectorAll('.tabs a').forEach(a => a.classList.toggle('on', a.dataset.v === (v === 'danes' ? 'zdaj' : v)));
   $('#net').innerHTML = navigator.onLine ? '<span class="dot"></span> povezano' : '<span class="dot off"></span> brez povezave';
   if (keepScroll) window.scrollTo(0, y);
 }
-window.addEventListener('hashchange', () => { if (['danes', 'nacrt', 'blizu'].includes(location.hash.slice(1))) { location.replace('#zdaj'); return; } askCtx = null; render(); window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => { if (['nacrt', 'blizu'].includes(location.hash.slice(1))) { location.replace('#zdaj'); return; } askCtx = null; render(); window.scrollTo(0, 0); });
 window.addEventListener('online', () => { render(true); loadWeather(); });
 window.addEventListener('offline', () => render(true));
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; if (view() === 'vec') render(true); });
@@ -553,6 +667,10 @@ function confetti() {
 function toggleList(key, id) { const l = LS.get(key, []), i = l.indexOf(id); if (i >= 0) l.splice(i, 1); else l.push(id); LS.set(key, l); return i < 0; }
 document.addEventListener('click', async ev => {
   const mf = ev.target.closest('a[data-mapfocus]');
+  const mw = ev.target.closest('a[data-mapwant]');
+  if (mw) { ev.preventDefault(); const on = toggleList('want', mw.dataset.mapwant); mw.textContent = on ? '⭐ v željah' : '☆ Želimo'; toast(on ? '⭐ Na seznamu želja' : 'Odstranjeno iz želja'); return; }
+  const iw = ev.target.closest('a[data-iwish]');
+  if (iw) { ideaCat = 'zelje'; }
   if (mf) { ev.preventDefault(); focus = mf.dataset.mapfocus; mood = 'vse'; LS.set('mood', mood); location.hash = '#zdaj'; return; }
   const go = ev.target.closest('a[data-go]');
   if (go) { const l = LS.get('done', []); if (!l.includes(go.dataset.go)) { l.push(go.dataset.go); LS.set('done', l); } focus = null; setTimeout(() => render(true), 400); return; }
@@ -570,6 +688,8 @@ document.addEventListener('click', async ev => {
     if (+j === q.a) { const d = qzDone(); d[qzKey(id, i)] = 1; LS.set('qz', d); confetti(); toast('GOOOL! ⚽ ' + quizGoals() + ' golov iz kvizov'); render(true); }
     else { t.classList.add('no'); toast('Skoraj! Poskusi še enkrat.'); }
     return; }
+  if (t.dataset.skipday) { const x = LS.get('skipday', { d: '', ids: [] }); const ids = x.d === todayKey() ? x.ids : []; ids.push(t.dataset.skipday); LS.set('skipday', { d: todayKey(), ids }); toast('Danes izpuščeno, jutri spet v načrtu'); render(true); return; }
+  if (t.dataset.focusGo) { focus = t.dataset.focusGo; mood = 'vse'; LS.set('mood', mood); location.hash = '#zdaj'; return; }
   if (t.dataset.iarea) { ideaArea = t.dataset.iarea; render(true); return; }
   if (t.dataset.mcat) { mapCat = t.dataset.mcat; render(true); return; }
   if (t.dataset.icat) { ideaCat = t.dataset.icat; render(true); return; }
@@ -593,6 +713,8 @@ document.addEventListener('click', async ev => {
     case 'mapme': toast('Iščem lokacijo …'); await getPos(); if (gpsInMadrid()) { LS.del('area'); render(true); map && map.setView([pos.lat, pos.lon], 15); } else toast('Niste v Madridu'); break;
     case 'maphotel': map && map.setView(HOTEL.ll, 16); break;
     case 'toloc': $('#loc')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); break;
+    case 'rest': LS.set('rest', !LS.get('rest', true)); render(true); break;
+    case 'unskipday': LS.del('skipday'); render(true); break;
     case 'nextfact': factI++; render(true); break;
     case 'locate': toast('Iščem lokacijo …'); if (!(await getPos())) toast('Lokacije ni bilo mogoče dobiti. Preveri dovoljenje.'); else { LS.del('area'); if (!gpsInMadrid()) toast('Telefon ni v Madridu, izberi okolico'); } loadWeather(true); render(true); break;
     case 'askclose': askCtx = null; render(true); break;
@@ -610,7 +732,7 @@ document.addEventListener('click', async ev => {
   }
 });
 
-if (['danes', 'nacrt', 'blizu'].includes(location.hash.slice(1))) location.replace('#zdaj');
+if (['nacrt', 'blizu'].includes(location.hash.slice(1))) location.replace('#zdaj');
 render();
 loadWeather();
 try { navigator.permissions.query({ name: 'geolocation' }).then(s => { if (s.state === 'granted') getPos().then(() => { if (gpsInMadrid()) { LS.del('area'); render(true); } }); }); } catch (e) {}
