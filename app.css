@@ -246,3 +246,11 @@ input[type=datetime-local],select{font:inherit;width:100%;border:1px solid var(-
 .wl button{border:0;background:rgba(0,0,0,.08);border-radius:50%;width:22px;height:22px;font-size:11px;padding:0}
 .wishcard .mlist{display:flex;flex-direction:column;gap:2px;margin-top:4px;color:var(--ink)}
 .wishcard .mlist b{display:inline;font-size:13px;margin-right:4px}
+.search{position:relative;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 6px 4px 12px}
+.search input{border:0;padding:10px 4px;font-size:16px;background:transparent;min-width:0;flex:1;outline:none}
+.search button{border:0;background:var(--card2);border-radius:50%;width:30px;height:30px}
+.qcount{margin:0;font-size:13px;color:var(--muted);font-weight:800}
+.mres{position:absolute;left:0;right:0;top:100%;z-index:1000;display:flex;flex-direction:column;background:var(--card);border-radius:12px;box-shadow:var(--shadow);margin-top:4px;overflow:hidden}
+.mres:empty{display:none}
+.mres button{border:0;border-bottom:1px solid var(--line);background:var(--card);text-align:left;padding:10px 12px;font-weight:800;font-size:14px;width:auto;height:auto;border-radius:0}
+.mres small{padding:10px 12px;color:var(--muted)}
