@@ -11,6 +11,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Nunito:wght@400;700;800&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
@@ -19,10 +20,12 @@
 <nav class="tabs" aria-label="Glavni meni">
   <a href="#zdaj" data-v="zdaj"><span>🧭</span>Kam zdaj</a>
   <a href="#ideje" data-v="ideje"><span>💡</span>Ideje</a>
-  <a href="#prado" data-v="prado"><span>🕵️</span>Prado</a>
+  <a href="#zemljevid" data-v="zemljevid"><span>🗺️</span>Zemljevid</a>
+  <a href="#prado" data-v="prado"><span>🕵️</span>Igre</a>
   <a href="#vec" data-v="vec"><span>☰</span>Več</a>
 </nav>
 <div class="toast" id="toast" role="status"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script src="places.js"></script>
 <script src="prado.js"></script>
 <script src="app.js"></script>

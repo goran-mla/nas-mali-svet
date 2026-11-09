@@ -1,13 +1,23 @@
 /* Catalogue of places. Public data only. h = opening hours by weekday (0 = Sunday … 6 = Saturday, d = default; null = closed; missing h = always open). set: in / out / mix. kid: 1–3 how much a 7-year-old enjoys it. */
+window.HOTEL = { name: 'Novotel Madrid Center', addr: "Calle de O'Donnell 53", ll: [40.4219, -3.6725], metro: "Metro O'Donnell (L6) je tik ob hotelu, Goya (L2, L4) 8 minut peš. Retiro je 10 minut peš." };
 window.AREAS = [
+  { id: 'hotel', short: '🏨 Hotel', name: 'naš hotel (Novotel, O\'Donnell)', ll: [40.4219, -3.6725] },
   { id: 'sol', short: 'Sol', name: 'Puerta del Sol in Plaza Mayor', ll: [40.4169, -3.7035] },
   { id: 'granvia', short: 'Gran Vía', name: 'Gran Vía in Callao', ll: [40.4199, -3.7040] },
-  { id: 'prado', short: 'Prado', name: 'Prado in Paseo del Prado', ll: [40.4140, -3.6925] },
+  { id: 'malasana', short: 'Malasaña', name: 'Malasaña', ll: [40.4262, -3.7040] },
+  { id: 'chueca', short: 'Chueca', name: 'Chueca', ll: [40.4228, -3.6975] },
+  { id: 'chamberi', short: 'Chamberí', name: 'Chamberí', ll: [40.4330, -3.7020] },
+  { id: 'salamanca', short: 'Salamanca', name: 'Salamanca (Serrano, Goya)', ll: [40.4255, -3.6840] },
   { id: 'retiro', short: 'Retiro', name: 'park Retiro', ll: [40.4183, -3.6840] },
-  { id: 'palacio', short: 'Palača', name: 'Kraljeva palača in Plaza de España', ll: [40.4190, -3.7130] },
+  { id: 'prado', short: 'Prado', name: 'Prado in Paseo del Prado', ll: [40.4140, -3.6925] },
+  { id: 'atocha', short: 'Atocha', name: 'Atocha', ll: [40.4085, -3.6915] },
   { id: 'latina', short: 'La Latina', name: 'La Latina', ll: [40.4115, -3.7110] },
-  { id: 'chueca', short: 'Chueca', name: 'Chueca in Malasaña', ll: [40.4235, -3.6990] },
-  { id: 'bernabeu', short: 'Bernabéu', name: 'stadion Bernabéu', ll: [40.4531, -3.6883] }
+  { id: 'lavapies', short: 'Lavapiés', name: 'Lavapiés', ll: [40.4089, -3.7010] },
+  { id: 'palacio', short: 'Palača', name: 'Kraljeva palača in Ópera', ll: [40.4180, -3.7120] },
+  { id: 'moncloa', short: 'Moncloa', name: 'Plaza de España, Debod in Moncloa', ll: [40.4280, -3.7170] },
+  { id: 'madridrio', short: 'Madrid Río', name: 'Madrid Río in Arganzuela', ll: [40.4000, -3.7100] },
+  { id: 'bernabeu', short: 'Bernabéu', name: 'Bernabéu in Chamartín', ll: [40.4531, -3.6883] },
+  { id: 'metropolitano', short: 'Metropolitano', name: 'stadion Metropolitano', ll: [40.4362, -3.5995] }
 ];
 window.PLACES = [
 /* ---------- ogledi ---------- */

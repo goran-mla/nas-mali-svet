@@ -1,5 +1,5 @@
 'use strict';
-const PL = window.PLACES, AREAS = window.AREAS, PR = window.PRADO;
+const PL = window.PLACES, AREAS = window.AREAS, PR = window.PRADO, HOTEL = window.HOTEL;
 const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const LS = {
@@ -10,7 +10,7 @@ const LS = {
 const MADRID = [40.4168, -3.7038];
 let pos = null, wx = LS.get('wx', null), wmode = LS.get('wmode', 'auto'), askCtx = null, deferredInstall = null;
 let mood = LS.get('mood', 'vse'), tired = LS.get('tired', false), budget = LS.get('budget', 120), focus = null, factI = 0;
-let ideaCat = 'vse', ideaIn = false, ideaOpen = false;
+let ideaCat = 'vse', ideaIn = false, ideaOpen = false, ideaArea = 'vse';
 let skip = LS.get('skip', { at: 0, ids: [] }); if (Date.now() - skip.at > 3 * 3600000) skip = { at: Date.now(), ids: [] };
 
 /* ---------- helpers ---------- */
@@ -38,7 +38,8 @@ function getPos() {
       () => res(null), { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
   });
 }
-const byId = id => PL.find(p => p.id === id);
+const GEN = () => ({ id: '_splosno', name: 'Kviz potovanja', quiz: window.QUIZ_GENERAL || [] });
+const byId = id => id === '_splosno' ? GEN() : PL.find(p => p.id === id);
 
 /* ---------- where are we ---------- */
 const gpsInMadrid = () => pos && dist([pos.lat, pos.lon], MADRID) < 40000;
@@ -46,9 +47,7 @@ function here() {
   if (gpsInMadrid()) return { ll: [pos.lat, pos.lon], src: 'gps' };
   const a = AREAS.find(x => x.id === LS.get('area', null));
   if (a) return { ll: a.ll, src: 'area', area: a };
-  const b = LS.get('base', null);
-  if (b && LS.get('area', null) === 'baza') return { ll: [b.lat, b.lon], src: 'base' };
-  return { ll: AREAS[0].ll, src: 'default', area: AREAS[0] };
+  return { ll: HOTEL.ll, src: 'default', area: AREAS[0] };
 }
 function landmark(ll) {
   let best = null;
@@ -57,11 +56,21 @@ function landmark(ll) {
 }
 function whereText() {
   const h = here();
-  if (h.src === 'area') return 'v okolici: ' + h.area.name;
-  if (h.src === 'base') return 'v naši bazi';
+  if (h.src === 'area' || h.src === 'default') return h.area.id === 'hotel' ? 'pri hotelu' : 'v okolici: ' + h.area.name;
   const lm = landmark(h.ll);
   if (h.src === 'gps') return lm && lm.d < 1500 ? (lm.d < 120 ? 'pri: ' + lm.p.name : 'okoli ' + fmtDist(lm.d) + ' od: ' + lm.p.name) : 'GPS ' + h.ll.map(x => x.toFixed(3)).join(', ');
-  return 'center (Puerta del Sol)';
+  return 'pri hotelu';
+}
+function areaOf(p) {
+  let best = null; AREAS.forEach(a => { if (a.id === 'hotel') return; const d = dist(a.ll, p.ll); if (!best || d < best.d) best = { a, d }; });
+  if (best && best.d < 2500) return best.a;
+  return dist(HOTEL.ll, p.ll) < 1200 ? AREAS[0] : { id: 'drugo', short: 'Drugje', name: 'izven centra' };
+}
+const hotelDist = () => { const h = here(); return dist(h.ll, HOTEL.ll); };
+function hotelBtn(big) {
+  const d = hotelDist(), far = walkMin(d) > 20;
+  if (d < 150) return '';
+  return `<div class="hotelbar"><span>🏨 <b>Hotel</b> ${far ? '' : walkMin(d) + ' min peš · '}${fmtDist(d)}</span><a class="btn ${big ? 'primary' : ''}" target="_blank" rel="noopener" href="${route(HOTEL.ll, far ? 'transit' : 'walking')}">${far ? '🚇 Pot v hotel' : '🚶 Pot v hotel'}</a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${HOTEL.ll.join(',')}&travelmode=driving">🚕</a></div>`;
 }
 
 /* ---------- weather ---------- */
@@ -124,7 +133,9 @@ function hoursToday(p, d) {
   return { segs, text: v.replace(/-/g, '–').replace(/,/g, ', ') };
 }
 function openState(p, d) {
-  if (p.from && d < new Date(p.from + 'T00:00')) return { open: false, text: 'odpre se ' + p.from.split('-').reverse().slice(0, 2).map(Number).join('. ') + '.' };
+  const dm = x => x.split('-').reverse().slice(0, 2).map(Number).join('. ') + '.';
+  if (p.from && d < new Date(p.from + 'T00:00')) return { open: false, text: (p.cat === 'dogodek' ? 'od ' : 'odpre se ') + dm(p.from) };
+  if (p.to && d > new Date(p.to + 'T23:59')) return { open: false, text: 'končano ' + dm(p.to) };
   const h = hoursToday(p, d);
   if (h.always) return { open: true, left: 9999, text: h.text || '' };
   if (h.closed) return { open: false, text: 'danes zaprto' };
@@ -139,9 +150,9 @@ function anchors() { return LS.get('anchors', []).map(a => ({ ...a, t: new Date(
 function nextAnchor() { const now = Date.now(); return anchors().find(a => a.t.getTime() > now - 30 * 60000) || null; }
 
 /* ---------- suggestion engine ---------- */
-const CATS = { ogled: ['🏛️', 'Ogled'], muzej: ['🖼️', 'Muzej'], nogomet: ['⚽', 'Nogomet'], igra: ['🛝', 'Igra in park'], razgled: ['🌇', 'Razgled'], hrana: ['🍽️', 'Hrana'], sladko: ['🍦', 'Sladko'], trgovina: ['🛍️', 'Trgovina'] };
-const MOODS = [['vse', '✨', 'Presenetite nas'], ['jesti', '🍽️', 'Lačni smo'], ['sladko', '🍦', 'Nekaj sladkega'], ['nogomet', '⚽', 'Nogomet'], ['igra', '🛝', 'Igra in tek'], ['ogled', '🏛️', 'Ogledi'], ['streha', '☔', 'Pod streho']];
-const moodOk = (p, md) => ({ vse: true, jesti: p.cat === 'hrana', sladko: p.cat === 'sladko', nogomet: !!p.fb, igra: p.cat === 'igra' || (p.tags || []).includes('igra'), ogled: ['ogled', 'muzej', 'razgled'].includes(p.cat), streha: p.set === 'in' }[md]);
+const CATS = { ogled: ['🏛️', 'Ogled'], muzej: ['🖼️', 'Muzej'], nogomet: ['⚽', 'Nogomet'], igra: ['🛝', 'Igra in park'], razgled: ['🌇', 'Razgled'], hrana: ['🍽️', 'Hrana'], zajtrk: ['☕', 'Zajtrk in kava'], sladko: ['🍦', 'Sladko'], trgovina: ['🛍️', 'Trgovina'], dogodek: ['🎟️', 'Dogodek'] };
+const MOODS = [['vse', '✨', 'Presenetite nas'], ['jesti', '🍽️', 'Lačni smo'], ['zajtrk', '☕', 'Zajtrk in kava'], ['sladko', '🍦', 'Nekaj sladkega'], ['nogomet', '⚽', 'Nogomet'], ['igra', '🛝', 'Igra in tek'], ['streha', '☔', 'Pod streho'], ['ogled', '🏛️', 'Ogledi'], ['dogodek', '🎟️', 'Dogodki'], ['mama', '💐', 'Za mamo']];
+const moodOk = (p, md) => ({ vse: true, jesti: p.cat === 'hrana', zajtrk: p.cat === 'zajtrk', dogodek: p.cat === 'dogodek', mama: (p.mama || 0) >= 2, sladko: p.cat === 'sladko', nogomet: !!p.fb, igra: p.cat === 'igra' || (p.tags || []).includes('igra'), ogled: ['ogled', 'muzej', 'razgled'].includes(p.cat), streha: p.set === 'in' }[md]);
 function suggest(md = mood) {
   const now = new Date(), m = now.getHours() * 60 + now.getMinutes(), h = here(), wet = isWet(), sun = sunsetMin();
   const done = new Set(LS.get('done', [])), want = new Set(LS.get('want', []));
@@ -166,7 +177,12 @@ function suggest(md = mood) {
       if (p.cat === 'hrana') s += (lunch || dinner) ? 12 : -30;
       if (p.cat === 'sladko') s += snack ? 10 : -14;
       if (p.cat === 'trgovina') s -= 8;
+      if (p.cat === 'zajtrk') s += m >= 450 && m <= 660 ? 22 : -30;
+      if (p.cat === 'dogodek') s += 6;
+      if ((p.kid || 0) <= 1 && (p.mama || 0) < 3) s -= 6;
     }
+    if (md === 'mama') s += (p.mama || 0) * 8 - p.kid * 6;
+    if (md === 'zajtrk' && m >= 450 && m <= 660) why.push('☕ čas za zajtrk');
     if ((lunch || dinner) && p.cat === 'hrana') why.push('🕐 čas za obrok');
     if (wet) { if (p.set === 'in') { s += 18; why.push('☔ pod streho'); } else if (p.set === 'out') s -= 45; else s -= 12; }
     else if (m < sun + 20 && p.set !== 'in') { s += wmode === 'sun' ? 16 : 8; if (wmode === 'sun') why.push('☀️ zunaj'); }
@@ -177,6 +193,8 @@ function suggest(md = mood) {
     if (want.has(p.id)) { s += 22; why.push('⭐ na seznamu želja'); }
     if (done.has(p.id)) { s -= 70; why.push('že obiskano'); }
     if (p.fb) why.push('⚽ nogometna zgodba');
+    if (p.quiz && p.quiz.length) why.push('❓ kviz');
+    if ((p.mama || 0) >= 3) why.push('💐 tudi za mamo');
     if (p.free) why.push('brezplačno');
     if (!st.open) { s -= 6; why.push(`⏳ začne čez ${st.opensIn} min`); }
     else if (st.left < 100) why.push(`odprto še ${fmtDur(st.left)}`);
@@ -241,10 +259,22 @@ function askBlock() {
   </div></div>${askPanel()}`;
 }
 
+/* ---------- quizzes ---------- */
+const qzKey = (id, i) => id + '#' + i;
+const qzDone = () => LS.get('qz', {});
+function quizBlock(p, open) {
+  if (!p.quiz || !p.quiz.length) return '';
+  const done = qzDone(), n = p.quiz.filter((_, i) => done[qzKey(p.id, i)]).length;
+  return `<details class="sec quizsec" ${open ? 'open' : ''} data-id="qz-${p.id}"><summary>❓ Kviz za otroka <span class="tag gold">${n}/${p.quiz.length}</span></summary>
+    ${p.quiz.map((q, i) => { const ok = done[qzKey(p.id, i)]; return `<div class="qz"><p><b>${esc(q.q)}</b></p>${ok ? `<p class="qok">⚽ Gol! ${esc(q.ok || '')}</p>` : `<div class="opts">${q.o.map((o, j) => `<button class="opt" data-qz="${p.id}|${i}|${j}">${esc(o)}</button>`).join('')}</div>`}</div>`; }).join('')}
+  </details>`;
+}
+function quizGoals() { return Object.keys(qzDone()).length; }
+
 /* ---------- place rendering ---------- */
 function band(p) { return `<div class="band c-${p.cat}"><span>${CATS[p.cat][0]}</span></div>`; }
-function details(p) {
-  return `${p.facts && p.facts.length ? `<details class="sec"><summary>Zanimivosti${p.facts.some(f => f.startsWith('⚽')) ? ' · ⚽' : ''}</summary><ul class="facts">${p.facts.map(f => `<li class="${f.startsWith('⚽') ? 'fb' : ''}">${esc(f.replace(/^⚽ /, ''))}</li>`).join('')}</ul></details>` : ''}
+function details(p, qOpen) {
+  return `${quizBlock(p, qOpen)}${p.mamaWhy ? `<p class="mamawhy"><b>Za mamo:</b> ${esc(p.mamaWhy)}</p>` : ''}${p.facts && p.facts.length ? `<details class="sec"><summary>Zanimivosti${p.facts.some(f => f.startsWith('⚽')) ? ' · ⚽' : ''}</summary><ul class="facts">${p.facts.map(f => `<li class="${f.startsWith('⚽') ? 'fb' : ''}">${esc(f.replace(/^⚽ /, ''))}</li>`).join('')}</ul></details>` : ''}
     ${p.food ? `<details class="sec" ${p.cat === 'hrana' ? 'open' : ''}><summary>Kaj jesti tukaj</summary><div class="food"><div class="f">${p.food.what ? esc(p.food.what) : ''}<div class="who">${p.food.nomeat ? `<span class="nm">brez mesa: ${esc(p.food.nomeat)}</span>` : ''}${p.food.kid ? `<span class="kd">otrok: ${esc(p.food.kid)}</span>` : ''}${p.food.note ? `<span>${esc(p.food.note)}</span>` : ''}</div></div></div></details>` : ''}
     ${p.tip ? `<details class="sec"><summary>Praktično</summary><ul class="facts">${[].concat(p.tip).map(t => `<li>${esc(t)}</li>`).join('')}</ul></details>` : ''}`;
 }
@@ -259,7 +289,7 @@ function pickCard(r) {
   return `<article class="card pick">
     ${p.img ? `<figure><img src="${p.img[0]}" alt="" loading="lazy"><figcaption>${esc(p.img[1])}</figcaption></figure>` : band(p)}
     <div class="body">
-      <div class="kick"><span class="eyebrow">Predlog · ${CATS[p.cat][1]}</span>${done ? '<span class="tag green">obiskano</span>' : ''}</div>
+      <div class="kick"><span class="eyebrow">Predlog · ${CATS[p.cat][1]} · ${esc(areaOf(p).short)}</span>${done ? '<span class="tag green">obiskano</span>' : ''}</div>
       <h2>${esc(p.name)}</h2>
       <p class="desc">${esc(p.what)}</p>
       ${p.kidWhy ? `<p class="kidwhy"><b>Za otroka:</b> ${esc(p.kidWhy)}</p>` : ''}
@@ -285,17 +315,17 @@ function altRow(r) {
 function hereCard() {
   if (!gpsInMadrid()) return '';
   let lm = null; const me = [pos.lat, pos.lon];
-  PL.forEach(p => { if (!p.facts || !p.facts.length) return; const d = dist(me, p.ll); if (d < 400 && (!lm || d < lm.d)) lm = { p, d }; });
+  PL.forEach(p => { if (!(p.facts && p.facts.length) || p.cat === 'dogodek') return; const d = dist(me, p.ll); if (d < 400 && (!lm || d < lm.d)) lm = { p, d }; });
   if (!lm) return '';
   const f = lm.p.facts[factI % lm.p.facts.length];
   return `<div class="card herecard"><div class="body"><span class="eyebrow">${lm.d < 120 ? 'Tukaj ste' : 'V bližini, ' + fmtDist(lm.d)}: ${esc(lm.p.name)}</span>
     <p style="margin:6px 0 0;font-size:17px;font-weight:700">${f.startsWith('⚽') ? '⚽ ' : 'Ali veš? '}${esc(f.replace(/^⚽ /, ''))}</p>
-    <div class="actions"><button class="btn" data-act="nextfact">Še ena zanimivost (${(factI % lm.p.facts.length) + 1}/${lm.p.facts.length})</button></div></div></div>`;
+    <div class="actions"><button class="btn" data-act="nextfact">Še ena zanimivost (${(factI % lm.p.facts.length) + 1}/${lm.p.facts.length})</button></div>${quizBlock(lm.p, true)}</div></div>`;
 }
 
 /* ---------- views ---------- */
 function locBlock() {
-  const h = here(), area = LS.get('area', null), base = LS.get('base', null);
+  const h = here(), area = LS.get('area', null) || 'hotel';
   const farGps = pos && !gpsInMadrid();
   return `<div class="card" id="loc"><div class="body">
     <div class="kick"><span class="eyebrow">Kje ste</span>${h.src === 'gps' ? `<span class="tag green">GPS ±${pos.acc} m</span>` : ''}</div>
@@ -303,7 +333,6 @@ function locBlock() {
     ${farGps ? '<p style="margin:4px 0 0;font-size:13px;color:var(--muted)">Telefon ni v Madridu, zato predlagam od izbranega mesta.</p>' : ''}
     <div class="chips" style="margin-top:10px">
       <button class="chip ${h.src === 'gps' ? 'on' : ''}" data-act="locate">📍 GPS</button>
-      ${base ? `<button class="chip ${area === 'baza' && h.src !== 'gps' ? 'on' : ''}" data-area="baza">🏠 Baza</button>` : ''}
       ${AREAS.map(a => `<button class="chip ${area === a.id && h.src !== 'gps' ? 'on' : ''}" data-area="${a.id}">${esc(a.short)}</button>`).join('')}
     </div></div></div>`;
 }
@@ -328,6 +357,7 @@ function vZdaj() {
     </div>
     ${top ? pickCard(top) : `<div class="notice"><span>🤷</span><div>Za to izbiro zdaj ni nič odprtega v bližini. Izberi drugo razpoloženje ali vprašaj chat spodaj.${skip.ids.length ? ' <button class="tag" data-act="unskip">pokaži preskočene</button>' : ''}</div></div>`}
     ${alts.length ? `<div><span class="eyebrow">Ali pa</span></div><div class="alts">${alts.map(altRow).join('')}</div>` : ''}
+    ${hotelBtn(tired)}
     ${skip.ids.length ? `<p style="margin:0;font-size:13px;color:var(--muted)">Preskočeno: ${skip.ids.length}. <button class="tag" data-act="unskip">ponastavi</button></p>` : ''}
     ${wxFull()}
     ${askBlock()}
@@ -336,17 +366,18 @@ function vZdaj() {
 }
 function vIdeje() {
   const h = here(), now = new Date(), done = LS.get('done', []), want = LS.get('want', []);
-  let list = PL.map(p => ({ p, d: dist(h.ll, p.ll), st: openState(p, now) }));
-  list = list.filter(r => (ideaCat === 'vse' || r.p.cat === ideaCat || (ideaCat === 'nogomet' && r.p.fb) || (ideaCat === 'zelje' && want.includes(r.p.id))) && (!ideaIn || r.p.set === 'in') && (!ideaOpen || r.st.open));
+  let list = PL.filter(p => !(p.to && now > new Date(p.to + 'T23:59'))).map(p => ({ p, d: dist(h.ll, p.ll), st: openState(p, now) }));
+  list = list.filter(r => (ideaCat === 'vse' || r.p.cat === ideaCat || (ideaCat === 'nogomet' && r.p.fb) || (ideaCat === 'zelje' && want.includes(r.p.id)) || (ideaCat === 'mama' && (r.p.mama || 0) >= 2)) && (!ideaIn || r.p.set === 'in') && (!ideaOpen || r.st.open) && (ideaArea === 'vse' || areaOf(r.p).id === ideaArea));
   list.sort((a, b) => a.d - b.d);
-  const cats = [['vse', 'Vse'], ['zelje', '⭐ Želje']].concat(Object.entries(CATS).map(([k, v]) => [k, v[0] + ' ' + v[1]]));
+  const cats = [['vse', 'Vse'], ['zelje', '⭐ Želje'], ['mama', '💐 Za mamo']].concat(Object.entries(CATS).map(([k, v]) => [k, v[0] + ' ' + v[1]]));
   return `<section class="page wrap">
     <div><span class="eyebrow">${PL.length} krajev · od ${esc(whereText())}</span><h1 class="title">Ideje</h1><p style="margin:4px 0 0;color:var(--muted)">Vse, kar je v aplikaciji. Označi ⭐, kar si želite; predlagalnik jih postavi višje.</p></div>
     <div class="chips">${cats.map(([k, l]) => `<button class="chip ${ideaCat === k ? 'on' : ''}" data-icat="${k}">${l}</button>`).join('')}</div>
+    <div class="chips scroll"><button class="chip ${ideaArea === 'vse' ? 'on' : ''}" data-iarea="vse">📍 Vsa področja</button>${AREAS.concat([{ id: 'drugo', short: 'Drugje' }]).filter(a => PL.some(p => areaOf(p).id === a.id)).map(a => `<button class="chip ${ideaArea === a.id ? 'on' : ''}" data-iarea="${a.id}">${esc(a.short)} <small>${PL.filter(p => areaOf(p).id === a.id).length}</small></button>`).join('')}</div>
     <div class="row"><button class="toggle" data-act="iin" aria-pressed="${ideaIn}"><span>Pod streho</span><span class="sw"></span></button><button class="toggle" data-act="iopen" aria-pressed="${ideaOpen}"><span>Odprto zdaj</span><span class="sw"></span></button></div>
     <div class="ideas">${list.map(({ p, d, st }) => `<details class="card idea" data-id="${p.id}"><summary>
         ${p.img ? `<img src="${p.img[0]}" alt="" loading="lazy">` : `<span class="ic c-${p.cat}">${CATS[p.cat][0]}</span>`}
-        <span class="tx"><b>${want.includes(p.id) ? '⭐ ' : ''}${esc(p.name)}${done.includes(p.id) ? ' ✔' : ''}</b><small>${esc(p.what)}</small><small class="${st.open ? 'op' : 'cl'}">${st.open ? 'odprto' : st.opensIn != null ? 'odpre ob ' + fmtT(now.getHours() * 60 + now.getMinutes() + st.opensIn) : /^odpre se/.test(st.text) ? st.text : 'zdaj zaprto'} · ${fmtDist(d)}</small></span></summary>
+        <span class="tx"><b>${want.includes(p.id) ? '⭐ ' : ''}${esc(p.name)}${done.includes(p.id) ? ' ✔' : ''}</b><small>${esc(p.what)}</small><small class="${st.open ? 'op' : 'cl'}">${esc(areaOf(p).short)} · ${st.open ? 'odprto' : st.opensIn != null ? 'odpre ob ' + fmtT(now.getHours() * 60 + now.getMinutes() + st.opensIn) : /^odpre se/.test(st.text) ? st.text : 'zdaj zaprto'} · ${fmtDist(d)}</small></span></summary>
         <div class="body">
           ${p.kidWhy ? `<p class="kidwhy" style="margin-top:0"><b>Za otroka:</b> ${esc(p.kidWhy)}</p>` : ''}
           ${metaLine(p, st)}
@@ -363,6 +394,36 @@ function vIdeje() {
   </section>`;
 }
 
+/* ---------- map ---------- */
+let map = null, mapLayer = null, mapCat = 'vse';
+function vZemljevid() {
+  const cats = [['vse', 'Vse']].concat(Object.entries(CATS).map(([k, v]) => [k, v[0] + ' ' + v[1]]));
+  return `<section class="page wrap mappage">
+    <div class="chips scroll">${cats.map(([k, l]) => `<button class="chip ${mapCat === k ? 'on' : ''}" data-mcat="${k}">${l}</button>`).join('')}</div>
+    <div id="map" class="map"></div>
+    <div class="row"><button class="btn" data-act="mapme">📍 Kje sem</button><button class="btn" data-act="maphotel">🏨 Hotel</button>${hotelBtn(false) ? `<a class="btn primary" target="_blank" rel="noopener" href="${route(HOTEL.ll, 'transit')}">Pot v hotel</a>` : ''}</div>
+    <p style="margin:0;font-size:12px;color:var(--muted)">Podlaga © OpenStreetMap. Brez povezave se zemljevid ne naloži, seznam v Ideje pa dela.</p>
+  </section>`;
+}
+function initMap() {
+  const el = $('#map'); if (!el) return;
+  if (!window.L) { el.innerHTML = '<p style="padding:16px">Zemljevid potrebuje povezavo.</p>'; return; }
+  if (map) { map.remove(); map = null; }
+  const h = here();
+  map = L.map(el, { zoomControl: true });
+  if (h.src === 'gps') map.setView(h.ll, 15); else map.fitBounds([[40.4150, -3.7085], HOTEL.ll], { padding: [24, 24] });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+  mapLayer = L.layerGroup().addTo(map);
+  const now = new Date();
+  PL.filter(p => (mapCat === 'vse' || p.cat === mapCat) && !(p.to && now > new Date(p.to + 'T23:59'))).forEach(p => {
+    const st = openState(p, now);
+    const m = L.marker(p.ll, { icon: L.divIcon({ className: 'pin c-' + p.cat + (st.open ? '' : ' shut'), html: CATS[p.cat][0], iconSize: [34, 34], iconAnchor: [17, 17] }) }).addTo(mapLayer);
+    m.bindPopup(`<b>${esc(p.name)}</b><br><small>${esc(p.what)}</small><br><small>${st.open ? '🟢 odprto' : '🔴 ' + esc(st.text || 'zdaj zaprto')}</small><br><a href="${route(p.ll, walkMin(dist(h.ll, p.ll)) > 22 ? 'transit' : 'walking')}" target="_blank" rel="noopener">🧭 Pot</a> · <a href="#" data-mapfocus="${p.id}">Predlagaj to</a>`);
+  });
+  L.marker(HOTEL.ll, { zIndexOffset: 1000, icon: L.divIcon({ className: 'pin hotel', html: '🏨', iconSize: [44, 44], iconAnchor: [22, 22] }) }).addTo(map).bindPopup(`<b>Naš hotel</b><br>${esc(HOTEL.name)}<br><small>${esc(HOTEL.addr)}</small>`);
+  if (gpsInMadrid()) L.circleMarker([pos.lat, pos.lon], { radius: 9, color: '#fff', weight: 3, fillColor: '#2E6D9B', fillOpacity: 1 }).addTo(map).bindPopup('Tukaj ste');
+}
+
 /* ---------- Prado game ---------- */
 function pg() { return LS.get('prado', { name: '', step: -1, g: {}, fav: null, pen: false }); }
 function pgSave(s) { LS.set('prado', s); }
@@ -375,6 +436,7 @@ function vPrado() {
     <div class="hero" style="min-height:150px"><img src="img/f-meninas.jpg" alt="" style="object-position:center 60%"><div class="in"><span class="eyebrow">Museo del Prado</span><h1>Detektivska liga</h1><p>${esc(PR.intro)}</p></div></div>
     <div class="card"><div class="body"><label class="eyebrow" for="pname">Kako ti je ime, kapetan?</label><input type="text" id="pname" maxlength="20" value="${esc(s.name)}" placeholder="Tvoje ime" style="margin-top:8px"><div class="actions"><button class="btn gold big block" data-act="pstart">⚽ Začni tekmo</button></div><p style="font-size:12px;color:var(--muted);margin:8px 0 0">Ime ostane samo na tem telefonu.</p></div></div>
     <div class="card"><div class="body"><span class="eyebrow">Za starše</span><ul class="facts">${PR.parents.map(p => `<li>${p}</li>`).join('')}</ul></div></div>
+    ${GEN().quiz.length ? `<div class="goalbar">⚽ Goli iz kvizov: <b>${quizGoals()}</b></div><div class="card"><div class="body"><span class="eyebrow">Kviz potovanja · Španija, Madrid in nogomet</span>${quizBlock(GEN(), true)}<p style="margin:10px 0 0;font-size:13px;color:var(--muted)">Še več vprašanj je pri vsakem kraju v zavihku Kam zdaj in Ideje.</p></div></div>` : ''}
   </section>`;
   if (s.step >= PR.matches.length) return vPradoEnd(s);
   const m = PR.matches[s.step], r = s.g[m.id] || {};
@@ -423,15 +485,17 @@ const PHRASES = [
 ];
 const PRESET_ANCHORS = [{ name: 'Tekma Španija – Anglija, Metropolitano', at: '2026-11-15T20:45', lead: 150, ll: [40.4362, -3.5995] }];
 function vVec() {
-  const an = anchors(), base = LS.get('base', null);
+  const an = anchors();
   return `<section class="page wrap">
     <div class="card"><div class="body"><span class="eyebrow">Fiksne točke · samo v tem telefonu</span>
       <p style="margin:6px 0 0;font-size:14px;color:var(--muted)">Stvari z uro, ki jih ne smete zamuditi. Predlagalnik potem ponuja samo, kar se izide do odhoda.</p>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">${an.map(a => `<div class="place"><div><b>${esc(a.name)}</b><br><small>${WD[a.t.getDay()]} ${a.t.getDate()}. ${a.t.getMonth() + 1}. ob ${hhmm(a.t)} · odhod ${a.lead || 60} min prej</small></div><button class="tag" data-delanchor="${esc(a.at + '|' + a.name)}">odstrani</button></div>`).join('') || '<p style="margin:0">Še nobene.</p>'}</div>
       <div class="form"><input type="text" id="an-name" maxlength="60" placeholder="Kaj, npr. Skywalk"><input type="datetime-local" id="an-at" value="2026-11-13T17:00"><select id="an-lead"><option value="30">odhod 30 min prej</option><option value="60" selected>odhod 1 h prej</option><option value="90">odhod 1,5 h prej</option><option value="150">odhod 2,5 h prej</option></select></div>
       <div class="actions"><button class="btn primary" data-act="addanchor">Dodaj</button>${PRESET_ANCHORS.filter(p => !an.some(a => a.at === p.at)).map((p, i) => `<button class="btn" data-preset="${i}">+ ${esc(p.name.split(',')[0])}</button>`).join('')}</div></div></div>
-    <div class="card"><div class="body"><span class="eyebrow">Naša baza</span>
-      ${base ? `<p style="margin:6px 0 0">Shranjena samo v tem telefonu.</p><div class="actions"><a class="btn primary" target="_blank" rel="noopener" href="${route([base.lat, base.lon], 'transit')}">🏠 Pot v bazo</a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${base.lat},${base.lon}&travelmode=driving">🚕 S taksijem</a><button class="btn" data-act="delbase">Pozabi bazo</button></div>` : `<p style="margin:6px 0 0">Ko prvič pridete do nastanitve, jo shrani. Ostane samo v tem telefonu.</p><div class="actions"><button class="btn primary" data-act="savebase">📍 Shrani, kjer sem zdaj</button></div>`}
+    <div class="card"><div class="body"><span class="eyebrow">Naš hotel</span>
+      <p style="margin:6px 0 0"><b>${esc(HOTEL.name)}</b><br>${esc(HOTEL.addr)}, Madrid <button class="tag" data-copy="${esc(HOTEL.name + ', ' + HOTEL.addr + ', 28009 Madrid')}">kopiraj naslov</button></p>
+      <p style="margin:6px 0 0;font-size:14px;color:var(--muted)">${esc(HOTEL.metro)}</p>
+      <div class="actions"><a class="btn primary" target="_blank" rel="noopener" href="${route(HOTEL.ll, 'transit')}">🚇 Pot v hotel</a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${HOTEL.ll.join(',')}&travelmode=driving">🚕 S taksijem</a><a class="btn" href="#zemljevid">🗺️ Na zemljevidu</a></div>
     </div></div>
     <div class="card"><div class="body"><span class="eyebrow">Španske fraze · pritisni 🔊</span><div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${PHRASES.map(([es, sl]) => `<div class="phr"><b>${esc(es)}</b><button data-say="${esc(es)}" aria-label="Predvajaj">🔊</button><small>${esc(sl)}</small></div>`).join('')}</div></div></div>
     <div class="card"><div class="body"><span class="eyebrow">Nujno</span><ul class="facts">
@@ -450,19 +514,20 @@ function vVec() {
       <p style="margin:6px 0 0">Android, Chrome: meni ⋮ → <b>Namesti aplikacijo</b> ali <b>Dodaj na začetni zaslon</b>. iPhone, Safari: Deli → <b>Dodaj na začetni zaslon</b>. Po prvem odprtju dela tudi brez povezave, razen vremena in chata.</p>
       ${deferredInstall ? '<div class="actions"><button class="btn primary" data-act="install">Namesti zdaj</button></div>' : ''}</div></div>
     <div class="card"><div class="body"><span class="eyebrow">Zasebnost</span>
-      <p style="margin:6px 0 0">To je javna stran brez osebnih podatkov: brez imen, nastanitve, letov in vstopnic. Baza, fiksne točke, želje, obiskano in napredek igre ostanejo samo v tem telefonu. Open-Meteo dobi zaokroženo lokacijo za vreme. Chat dobi samo opis, kje ste (najbližja znamenitost), in to samo, ko sami pritisnete gumb.</p>
+      <p style="margin:6px 0 0">To je javna stran brez imen, letov in vstopnic; hotel je vpisan namenoma. Fiksne točke, želje, obiskano in napredek iger ostanejo samo v tem telefonu. Open-Meteo dobi zaokroženo lokacijo za vreme. Chat dobi samo opis, kje ste (najbližja znamenitost), in to samo, ko sami pritisnete gumb. Zemljevid nalaga podlago z OpenStreetMap.</p>
       <div class="actions"><button class="btn" data-act="undone">Počisti "obiskano"</button><button class="btn" data-act="wipe">Izbriši vse podatke s tega telefona</button></div></div></div>
   </section>`;
 }
 
 /* ---------- render & events ---------- */
-const VIEWS = { zdaj: vZdaj, ideje: vIdeje, prado: vPrado, vec: vVec };
+const VIEWS = { zdaj: vZdaj, ideje: vIdeje, zemljevid: vZemljevid, prado: vPrado, vec: vVec };
 function view() { const h = location.hash.slice(1); return VIEWS[h] ? h : 'zdaj'; }
 function render(keepScroll) {
   const v = view(), y = window.scrollY;
   const open = keepScroll ? [...document.querySelectorAll('details[open][data-id]')].map(d => d.dataset.id) : [];
   $('#app').innerHTML = VIEWS[v]();
   open.forEach(id => { const d = document.querySelector(`details[data-id="${id}"]`); if (d) d.open = true; });
+  if (v === 'zemljevid') initMap(); else if (map) { map.remove(); map = null; }
   document.querySelectorAll('.tabs a').forEach(a => a.classList.toggle('on', a.dataset.v === v));
   $('#net').innerHTML = navigator.onLine ? '<span class="dot"></span> povezano' : '<span class="dot off"></span> brez povezave';
   if (keepScroll) window.scrollTo(0, y);
@@ -481,6 +546,8 @@ function confetti() {
 }
 function toggleList(key, id) { const l = LS.get(key, []), i = l.indexOf(id); if (i >= 0) l.splice(i, 1); else l.push(id); LS.set(key, l); return i < 0; }
 document.addEventListener('click', async ev => {
+  const mf = ev.target.closest('a[data-mapfocus]');
+  if (mf) { ev.preventDefault(); focus = mf.dataset.mapfocus; mood = 'vse'; LS.set('mood', mood); location.hash = '#zdaj'; return; }
   const go = ev.target.closest('a[data-go]');
   if (go) { const l = LS.get('done', []); if (!l.includes(go.dataset.go)) { l.push(go.dataset.go); LS.set('done', l); } focus = null; setTimeout(() => render(true), 400); return; }
   const t = ev.target.closest('button'); if (!t) return;
@@ -493,6 +560,12 @@ document.addEventListener('click', async ev => {
   if (t.dataset.focus) { focus = t.dataset.focus; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
   if (t.dataset.done) { const on = toggleList('done', t.dataset.done); toast(on ? 'Označeno kot obiskano' : 'Odznačeno'); render(true); return; }
   if (t.dataset.want) { const on = toggleList('want', t.dataset.want); toast(on ? '⭐ Na seznamu želja' : 'Odstranjeno iz želja'); render(true); return; }
+  if (t.dataset.qz) { const [id, i, j] = t.dataset.qz.split('|'), p = byId(id), q = p && p.quiz[+i]; if (!q) return;
+    if (+j === q.a) { const d = qzDone(); d[qzKey(id, i)] = 1; LS.set('qz', d); confetti(); toast('GOOOL! ⚽ ' + quizGoals() + ' golov iz kvizov'); render(true); }
+    else { t.classList.add('no'); toast('Skoraj! Poskusi še enkrat.'); }
+    return; }
+  if (t.dataset.iarea) { ideaArea = t.dataset.iarea; render(true); return; }
+  if (t.dataset.mcat) { mapCat = t.dataset.mcat; render(true); return; }
   if (t.dataset.icat) { ideaCat = t.dataset.icat; render(true); return; }
   if (t.dataset.say) { speak(t.dataset.say); return; }
   if (t.dataset.copy) { copy(t.dataset.copy); return; }
@@ -511,11 +584,11 @@ document.addEventListener('click', async ev => {
     case 'iin': ideaIn = !ideaIn; render(true); break;
     case 'iopen': ideaOpen = !ideaOpen; render(true); break;
     case 'unskip': skip = { at: Date.now(), ids: [] }; LS.set('skip', skip); render(true); break;
+    case 'mapme': toast('Iščem lokacijo …'); await getPos(); if (gpsInMadrid()) { LS.del('area'); render(true); map && map.setView([pos.lat, pos.lon], 15); } else toast('Niste v Madridu'); break;
+    case 'maphotel': map && map.setView(HOTEL.ll, 16); break;
     case 'toloc': $('#loc')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); break;
     case 'nextfact': factI++; render(true); break;
     case 'locate': toast('Iščem lokacijo …'); if (!(await getPos())) toast('Lokacije ni bilo mogoče dobiti. Preveri dovoljenje.'); else { LS.del('area'); if (!gpsInMadrid()) toast('Telefon ni v Madridu, izberi okolico'); } loadWeather(true); render(true); break;
-    case 'savebase': if (!pos) await getPos(); if (!pos) { toast('Lokacije ni bilo mogoče dobiti'); break; } LS.set('base', { lat: +pos.lat.toFixed(5), lon: +pos.lon.toFixed(5) }); toast('Baza shranjena v telefonu'); render(true); break;
-    case 'delbase': LS.del('base'); if (LS.get('area') === 'baza') LS.del('area'); render(true); break;
     case 'askclose': askCtx = null; render(true); break;
     case 'copyprompt': copy(buildPrompt(askCtx.q)); break;
     case 'askmine': { const q = ($('#myq')?.value || '').trim(); if (!q) { toast('Najprej napiši vprašanje'); break; } askCtx = { id: 'mine', label: q, q }; render(true); $('#askpanel')?.scrollIntoView({ behavior: 'smooth' }); break; }
