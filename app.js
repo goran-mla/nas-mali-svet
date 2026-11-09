@@ -163,11 +163,14 @@ function suggest(md = mood) {
   PL.forEach(p => {
     if (skip.ids.includes(p.id) || !moodOk(p, md)) return;
     const st = openState(p, now);
-    if (!st.open && !(st.opensIn != null && st.opensIn <= 40)) return;
+    const ev = p.cat === 'dogodek';
+    if (!st.open && !(st.opensIn != null && st.opensIn <= (ev ? 150 : 40))) return;
+    if (ev && st.open && hoursToday(p, now).segs && st.left < p.dur * 0.7) return;
     const d = dist(h.ll, p.ll), w = walkMin(d), far = w > lim;
     const travel = far ? Math.min(40, 12 + Math.round(d / 1000 * 2.5)) : w;
+    if (ev && !st.open && st.opensIn < travel) return;
     const stay = Math.min(p.dur, budget);
-    if (st.open && st.left < travel + Math.min(p.dur, 40) * 0.6) return;
+    if (st.open && !ev && st.left < travel + Math.min(p.dur, 40) * 0.6) return;
     if (toLeave > -30 && toLeave < travel + Math.min(p.dur, 40) + 10) return;
     let s = p.kid * 12; const why = [];
     why.push(far ? `🚕 ~${travel} min s taksijem ali metrojem` : `🚶 ${w} min peš`);
@@ -187,7 +190,7 @@ function suggest(md = mood) {
     if (wet) { if (p.set === 'in') { s += 18; why.push('☔ pod streho'); } else if (p.set === 'out') s -= 45; else s -= 12; }
     else if (m < sun + 20 && p.set !== 'in') { s += wmode === 'sun' ? 16 : 8; if (wmode === 'sun') why.push('☀️ zunaj'); }
     if (m > sun + 20 && p.set === 'out' && !(p.tags || []).includes('noc')) s -= 22;
-    if (p.cat === 'razgled' && m < sun && sun - m < 80) { s += 18; why.push('🌇 kmalu sončni zahod'); }
+    if (p.cat === 'razgled' && m < sun && sun - m < 80) { s += far ? 4 : 12; why.push('🌇 kmalu sončni zahod'); }
     if (tired) { if (p.dur > 90) s -= 18; if ((p.tags || []).includes('sedi')) { s += 10; why.push('🪑 sedite'); } }
     if (p.dur > budget + 30) s -= 25;
     if (want.has(p.id)) { s += 22; why.push('⭐ na seznamu želja'); }
@@ -196,11 +199,13 @@ function suggest(md = mood) {
     if (p.quiz && p.quiz.length) why.push('❓ kviz');
     if ((p.mama || 0) >= 3) why.push('💐 tudi za mamo');
     if (p.free) why.push('brezplačno');
-    if (!st.open) { s -= 6; why.push(`⏳ začne čez ${st.opensIn} min`); }
+    if (!st.open) { s -= ev ? 0 : 6; why.push(ev ? `🎟️ začne ob ${fmtT(m + st.opensIn)}` : `⏳ začne čez ${st.opensIn} min`); }
     else if (st.left < 100) why.push(`odprto še ${fmtDur(st.left)}`);
     out.push({ p, s, d, w, far, travel, stay, why, st });
   });
   out.sort((a, b) => b.s - a.s);
+  const chain = r => r.p.name.split(' (')[0].toLowerCase(), seenC = new Set();
+  for (let i = 0; i < out.length; i++) { const c = chain(out[i]); if (seenC.has(c)) { out.splice(i, 1); i--; } else seenC.add(c); }
   if (focus) { const i = out.findIndex(r => r.p.id === focus); if (i > 0) out.unshift(out.splice(i, 1)[0]); }
   if (md === 'vse' && out.length > 3) { // variety: no two of the same kind in the top three
     const top = [out[0]];
@@ -276,7 +281,8 @@ function band(p) { return `<div class="band c-${p.cat}"><span>${CATS[p.cat][0]}<
 function details(p, qOpen) {
   return `${quizBlock(p, qOpen)}${p.mamaWhy ? `<p class="mamawhy"><b>Za mamo:</b> ${esc(p.mamaWhy)}</p>` : ''}${p.facts && p.facts.length ? `<details class="sec"><summary>Zanimivosti${p.facts.some(f => f.startsWith('⚽')) ? ' · ⚽' : ''}</summary><ul class="facts">${p.facts.map(f => `<li class="${f.startsWith('⚽') ? 'fb' : ''}">${esc(f.replace(/^⚽ /, ''))}</li>`).join('')}</ul></details>` : ''}
     ${p.food ? `<details class="sec" ${p.cat === 'hrana' ? 'open' : ''}><summary>Kaj jesti tukaj</summary><div class="food"><div class="f">${p.food.what ? esc(p.food.what) : ''}<div class="who">${p.food.nomeat ? `<span class="nm">brez mesa: ${esc(p.food.nomeat)}</span>` : ''}${p.food.kid ? `<span class="kd">otrok: ${esc(p.food.kid)}</span>` : ''}${p.food.note ? `<span>${esc(p.food.note)}</span>` : ''}</div></div></div></details>` : ''}
-    ${p.tip ? `<details class="sec"><summary>Praktično</summary><ul class="facts">${[].concat(p.tip).map(t => `<li>${esc(t)}</li>`).join('')}</ul></details>` : ''}`;
+    ${p.tip ? `<details class="sec"><summary>Praktično</summary><ul class="facts">${[].concat(p.tip).map(t => `<li>${esc(t)}</li>`).join('')}</ul></details>` : ''}
+    ${p.unv && p.unv.length ? `<p class="unv">Ni zanesljivo preverjeno (${esc(p.unv.map(u => ({ hours: 'ure', price: 'cena', price_adult: 'cena', price_child7: 'cena', ll: 'lokacija', still_open: 'ali še obratuje' })[String(u).split('.')[0]] || u).filter((x, i, a) => a.indexOf(x) === i).join(', '))}). Pred obiskom preveri.</p>` : ''}`;
 }
 function links(p) {
   return (p.links || []).map(l => `<a class="btn ${l.t ? 'red' : ''}" target="_blank" rel="noopener" href="${esc(l.u)}">${l.t ? '🎟️' : '🔗'} ${esc(l.l)}</a>`).join('') + (p.id === 'prado' ? '<a class="btn gold" href="#prado">🕵️ Igra v Pradu</a>' : '');
