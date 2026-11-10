@@ -44,7 +44,9 @@ const KW = [
   ['trgovin', 'shop', 'nakup', 'tienda', 'store'],
   ['cudez', 'magic', 'carov', 'harry', 'iluzij', 'illusion', 'pravljic', 'princes'],
   ['dez', 'rain', 'pod streho', 'notri', 'indoor'],
-  ['zastonj', 'brezplac', 'free', 'gratis']
+  ['zastonj', 'brezplac', 'free', 'gratis'],
+  ['wellness', 'welness', 'spa ', 'masaz', 'massage', 'hammam', 'kopel', 'savn', 'sauna', 'relaks', 'sprostit'],
+  ['flamenco', 'tablao', 'ples', 'dance', 'baile', 'balet', 'ballet', 'sevillan', 'kitar']
 ];
 const KWI = KW.map(g => g.map(norm));
 const KWPH = KWI.flatMap(g => g.filter(t => t.trim().includes(' ')).map(t => [t.trim(), t.trim().replace(/ /g, '_')]));

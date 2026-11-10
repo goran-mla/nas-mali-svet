@@ -6960,6 +6960,645 @@ window.PLACES.push(...[
 "Jezik ni naveden",
 "from: 12. 11. sklepano iz Feverjevega seznama"
 ]
+},
+{
+"id": "corral-de-la-moreria",
+"name": "Corral de la Morería",
+"cat": "dogodek",
+"set": "in",
+"ll": [
+40.4127,
+-3.7142
+],
+"dur": 75,
+"kid": 2,
+"mama": 3,
+"q": "Corral de la Morería, Calle de la Morería 17, Madrid",
+"price": "Samo predstava 95,90 EUR na osebo (brez večerje). Otroške cene na uradni strani ni. Večerja se plača posebej, menuji od 49,95 EUR.",
+"what": "Najslavnejši tablao na svetu, odprt od leta 1956, letos praznuje 70 let. Vsak teden nastopijo največje zvezde flamenka.",
+"kidWhy": "Sedi čisto blizu odra in vidi, kako hitro plesalec tolče s petami, slišiš ga skoraj kot bobnar.",
+"mamaWhy": "Flamenco najvišje ravni: 14. do 16. 11. plešeta zvezdi Rafaela Carrasco in Alfonso Losa (14. in 15. 11. María Carrasco namesto Lose), 13. 11. Lucía Campillo in David Coria.",
+"warn": "Otroci pod 7 let ne smejo vstopiti, fant je ravno dovolj star. Drago, drugi pas ob 21:30 je za otroka prepozen.",
+"h": {
+"d": "19:00-22:45"
+},
+"facts": [
+"Corral de la Morería je star 70 let.",
+"Tu so plesali največji plesalci flamenka na svetu.",
+"Restavracija v tablau ima Michelinovo zvezdico, kar je za flamenco lokal zelo redko."
+],
+"tip": [
+"Vstopnice kupite takoj na uradni strani, prostora je malo in hitro zmanjka.",
+"Izberite prvi pas zvečer, drugi se začne šele ob 21:30.",
+"Za mamo: v restavraciji je veganski menu Taranto (59,95 EUR) in menuji z ribo, na primer brancin.",
+"Vzemite osebni dokument za fanta, ker otroci pod 7 let ne smejo noter."
+],
+"links": [
+{
+"l": "Vstopnice",
+"u": "https://www.corraldelamoreria.com/flamenco-tickets-madrid/",
+"t": 1
+},
+{
+"l": "Meni",
+"u": "https://www.corraldelamoreria.com/restaurante/"
+}
+],
+"quiz": [
+{
+"q": "Koliko let letos praznuje Corral de la Morería?",
+"o": [
+"70 let",
+"7 let",
+"700 let"
+],
+"a": 0,
+"ok": "Prav! Odprli so ga leta 1956, zato letos praznuje 70 let."
+}
+],
+"img": [
+"img/x-corral-de-la-moreria.jpg",
+"Dtom, CC BY-SA 3.0, Wikimedia Commons"
+],
+"unv": [
+"Točna ura prvega pasu (okoli 19:00 po Taquilla.com, uradno je potrjen le drugi pas ob 21:30)",
+"Otroška cena",
+"Trajanje predstave"
+]
+},
+{
+"id": "tablao-flamenco-1911",
+"name": "Tablao Flamenco 1911 (nekdanji Villa Rosa)",
+"cat": "dogodek",
+"set": "in",
+"ll": [
+40.415,
+-3.7014
+],
+"dur": 60,
+"kid": 3,
+"mama": 3,
+"q": "Tablao Flamenco 1911, Plaza de Santa Ana 15, Madrid",
+"price": "Otroci 4 do 12 let 25 EUR (cona B ali C), do 3 let zastonj v naročju. Odrasli glede na cono, okoli 39 EUR in več. Pijača je vključena.",
+"what": "Najstarejši tablao na svetu, odprt od leta 1911 na Plaza de Santa Ana. Vsak dan štiri enourne predstave z desetimi umetniki na odru.",
+"kidWhy": "Predstava ob 18:00 traja točno eno uro, na odru pa je kar deset plesalcev, pevcev in kitaristov naenkrat.",
+"mamaWhy": "Od 9. do 15. 11. tu pleše José Maya, eden najmočnejših plesalcev današnjega flamenka, v čudoviti stari dvorani s ploščicami.",
+"warn": "Vegetarijanskega menija nimajo, tapas so večinoma šunka in sir. Večerjajte raje drugje.",
+"h": {
+"d": "18:00-23:30"
+},
+"facts": [
+"Tablao je odprt že od leta 1911, to je več kot 100 let.",
+"Tu so nastopali Lola Flores, Paco de Lucía in Carmen Amaya.",
+"Pročelje je okrašeno s pisanimi keramičnimi ploščicami, Španci jim rečejo azulejos."
+],
+"tip": [
+"Pasovi vsak dan ob 18:00, 19:30, 21:00 in 22:30. Za družino je najboljši ob 18:00.",
+"Mizo izberete sami na tlorisu dvorane med spletnim nakupom.",
+"Pridite 15 minut prej. Snemanje celotne predstave ni dovoljeno, fotografije brez bliskavice so v redu.",
+"Brezplačna sprememba datuma in vračilo denarja do 24 ur pred predstavo."
+],
+"links": [
+{
+"l": "Vstopnice",
+"u": "https://tablaoflamenco1911.com/es/comprar-entradas/",
+"t": 1
+},
+{
+"l": "Spletna stran",
+"u": "https://tablaoflamenco1911.com/es/faq-show/"
+}
+],
+"quiz": [
+{
+"q": "Tablao je odprt od leta 1911. Približno koliko let je to?",
+"o": [
+"Več kot 100 let",
+"Okoli 20 let",
+"Okoli 50 let"
+],
+"a": 0,
+"ok": "Bravo! Od 1911 do 2026 je 115 let."
+},
+{
+"q": "Kako Španci rečejo pisanim ploščicam na pročelju?",
+"o": [
+"Azulejos",
+"Churros",
+"Tapas"
+],
+"a": 0,
+"ok": "Prav! Azulejos so poslikane keramične ploščice."
+}
+],
+"img": [
+"img/x-tablao-flamenco-1911.jpg",
+"Luis García (Zaqarbal), CC BY-SA 3.0 es, Wikimedia Commons"
+],
+"unv": [
+"Cena za odrasle (odvisna od cone, okoli 39 EUR po Headout)",
+"Ali José Maya nastopi v vsakem pasu ali le v nekaterih"
+]
+},
+{
+"id": "las-tablas",
+"name": "Tablao Las Tablas",
+"cat": "dogodek",
+"set": "in",
+"ll": [
+40.422,
+-3.7136
+],
+"dur": 75,
+"kid": 2,
+"mama": 3,
+"q": "Las Tablas, Plaza de España 9, Madrid",
+"price": "Predstava s pijačo 45 EUR, otroci 4 do 10 let 20 EUR, do 3 let zastonj. Večerja s predstavo: vegetarijanski ali ribji menu 102 EUR.",
+"what": "Prijeten, intimen tablao ob Plaza de España, kjer nastopajo mladi talenti in priznani umetniki. Vsak dan predstava ob 19:00 in ob 21:30.",
+"kidWhy": "Otroška vstopnica je samo 20 EUR, po predstavi pa je čez cesto veliko igrišče na Plaza de España.",
+"mamaWhy": "Edini tablao s pravim vegetarijanskim in ribjim menijem za večerjo pred predstavo, flamenco pa je zelo pristen.",
+"h": {
+"d": "19:00-22:45"
+},
+"facts": [
+"Tablao pomeni lesen oder, po katerem plesalci tolčejo s petami.",
+"Ploskanju v ritmu flamenka Španci rečejo palmas."
+],
+"tip": [
+"Predstava ob 19:00, večerja pred njo se začne ob 18:00.",
+"Na zahtevo pripravijo enourno uvodno uro flamenka za skupine, brez predznanja. Pokličite +34 915 420 520.",
+"Kombinirajte s Templo de Debod, ki je pet minut peš."
+],
+"links": [
+{
+"l": "Vstopnice",
+"u": "https://lastablasmadrid.com/entradas-flamenco-en-madrid/",
+"t": 1
+},
+{
+"l": "Spletna stran",
+"u": "https://lastablasmadrid.com/horarios-y-tarifas/"
+}
+],
+"quiz": [
+{
+"q": "Kako se reče ploskanju v ritmu flamenka?",
+"o": [
+"Palmas",
+"Paella",
+"Pelota"
+],
+"a": 0,
+"ok": "Prav! Palmas so ploskanje z dlanmi, poskusi ga tudi ti."
+}
+],
+"unv": [
+"Trajanje predstave",
+"Cena in razpoložljivost zasebne ure flamenka za družino"
+]
+},
+{
+"id": "torres-bermejas",
+"name": "Tablao Torres Bermejas",
+"cat": "dogodek",
+"set": "in",
+"ll": [
+40.4198,
+-3.7043
+],
+"dur": 60,
+"kid": 2,
+"mama": 2,
+"q": "Tablao Torres Bermejas, Calle de Mesonero Romanos 11, Madrid",
+"price": "Predstava s pijačo 39 EUR (brez pijače, stranska cona 31 EUR). Otroci 4 do 12 let pol cene, s pijačo 19,50 EUR, do 3 let zastonj.",
+"what": "Tablao tik ob Gran Víi, okrašen kot dvorana v Alhambri v Granadi, z več kot 60 leti zgodovine. Enourne predstave vsak dan.",
+"kidWhy": "Najzgodnejša predstava v mestu ob 17:00, v dvorani s pisanimi arabskimi loki kot iz pravljice.",
+"mamaWhy": "Zgodnji pas ob 17:00 pusti cel večer prost, v ponudbi pa sta vegetarijanski menu in menu z lososom.",
+"h": {
+"d": "17:00-22:00",
+"6": "17:00-23:45"
+},
+"facts": [
+"Torres Bermejas pomeni Rdeči stolpi. Tako se imenujejo stolpi v Granadi.",
+"Tu je pogosto pel slavni pevec flamenka Camarón de la Isla."
+],
+"tip": [
+"Pasovi vsak dan ob 17:00, 19:00 in 21:00, ob sobotah še ob 22:45. Dvorana se odpre pol ure prej.",
+"Za mamo: vegetarijanski menu tapas 59 EUR, vegetarijanski menu 79 EUR, menu z lososom in bacalaom na seznamu menijev.",
+"Ob alergijah se pred predstavo pogovorite z vodjo dvorane."
+],
+"links": [
+{
+"l": "Vstopnice",
+"u": "https://torresbermejasreservas.es",
+"t": 1
+},
+{
+"l": "Spletna stran",
+"u": "https://www.torresbermejas.com/faq"
+}
+],
+"quiz": [
+{
+"q": "Kaj pomeni ime Torres Bermejas?",
+"o": [
+"Rdeči stolpi",
+"Zeleni vrtovi",
+"Modra reka"
+],
+"a": 0,
+"ok": "Bravo! Torres so stolpi, bermejas pa rdečkaste."
+}
+],
+"unv": [
+"Kateri umetniki nastopijo 13. do 15. 11.",
+"Točna sestava ribjega menija"
+]
+},
+{
+"id": "amor-de-dios",
+"name": "Centro de Arte Flamenco y Danza Española Amor de Dios",
+"cat": "dogodek",
+"set": "in",
+"ll": [
+40.4117,
+-3.6985
+],
+"dur": 60,
+"kid": 1,
+"mama": 3,
+"q": "Amor de Dios, Calle de Santa Isabel 5, Madrid",
+"price": "Turistična enourna ura flamenka za začetnike (MADride Travel) prek platform okoli 39 EUR na osebo. Cene rednih ur šole niso objavljene.",
+"what": "Legendarna šola flamenka nad tržnico Antón Martín, kjer od leta 1953 vadijo najboljši plesalci. Po hodnikih se iz vseh studiev sliši zapateado.",
+"kidWhy": "Na hodniku sliši, kako v vsakem studiu nekdo tolče s petami, kot da bi bila hiša en velik boben.",
+"mamaWhy": "Za nekdanjo plesalko pravo romanje: lahko vzame uro za začetnike ali odprto uro escuela bolera s kastanjetami.",
+"warn": "To je prava šola, ne turistična atrakcija. Ure so za odrasle, fant naj bo medtem z očetom. Turistična ura se lahko odpove, če ni vsaj treh udeležencev.",
+"h": {
+"d": null,
+"5": "12:00-14:00",
+"6": "11:00-14:00"
+},
+"facts": [
+"Šola obstaja že od leta 1953.",
+"Zapateado je ples, pri katerem plesalec s petami in konicami čevljev tolče ritem.",
+"Kastanjete so dve leseni školjki, s katerima plesalka klopota v roki."
+],
+"tip": [
+"Turistična ura za začetnike (1 ura, brez predznanja, čevlje posodijo) se začne na tem naslovu. Rezervirajte prek GetYourGuide ali Expedie, uro potrdijo po WhatsAppu.",
+"Odprte ure escuela bolera in plesa z Roso Zaragoza: petek 13:00 do 14:00 in sobota 11:00 do 14:00. Rezervacija po WhatsAppu +34 629 469 773.",
+"Ura Joséja Maye je v petek 12:00 do 13:00, a je za srednjo in napredno raven.",
+"Spodaj je tržnica Antón Martín, kjer lahko oče in fant medtem nekaj pojesta."
+],
+"links": [
+{
+"l": "Spletna stran",
+"u": "https://amordedios.com/"
+},
+{
+"l": "Rezervacija",
+"u": "https://www.clicatour.com/es/excursion/spain/madrid/madrid-flamenco-class-experience-small-groups-or-solo-travelers",
+"t": 1
+}
+],
+"quiz": [
+{
+"q": "Kako se imenujeta leseni školjki, s katerima plesalka klopota v roki?",
+"o": [
+"Kastanjete",
+"Maracas",
+"Paličici"
+],
+"a": 0,
+"ok": "Prav! Kastanjete so iz lesa in zvenijo klop klop."
+}
+],
+"img": [
+"img/x-amor-de-dios.jpg",
+"Sofíaa1999, CC BY-SA 4.0, Wikimedia Commons"
+],
+"unv": [
+"Točni termini turistične ure za začetnike 13. do 15. 11.",
+"Ali ure Rose Zaragoza sprejmejo enkratne obiskovalke in kakšna je raven",
+"Cene rednih ur"
+]
+},
+{
+"id": "four-seasons-spa",
+"name": "Spa hotela Four Seasons Madrid",
+"cat": "dogodek",
+"set": "in",
+"ll": [
+40.4173,
+-3.7004
+],
+"dur": 120,
+"kid": 1,
+"mama": 3,
+"q": "Four Seasons Hotel Madrid, Calle de Sevilla 3, Madrid",
+"price": "Cene niso javno objavljene. Zunanji gostje pridejo z rezervacijo tretmaja, cene preverite po telefonu.",
+"what": "Največji mestni spa v Španiji, na štirih nadstropjih med Solom in Gran Víjo. Bazen s steklenim stropom, savna, parna kopel in sončna terasa.",
+"kidWhy": "Tu fant ne uživa, zato gre z očetom na sladoled ali v trgovino Real Madrid na bližnjem Solu.",
+"mamaWhy": "Dve uri tišine po celem dnevu hoje: masaža, plavanje pod steklenim stropom in pogled čez strehe Madrida.",
+"warn": "Luksuzno in drago. Za otroke ni primerno, fant naj bo medtem z očetom.",
+"h": {
+"d": "10:00-21:00"
+},
+"facts": [
+"Spa ima bazen dolg 14 metrov, nad njim je steklen strop.",
+"Hotel stoji v več starih bančnih palačah, ki so jih povezali v eno stavbo."
+],
+"tip": [
+"Spa in bazen sta odprta vsak dan od 7:00 do 21:00, tretmaji od 10:00 do 21:00.",
+"Rezervirajte vnaprej po telefonu +34 91 330 60 35 ali po e-pošti spa.madrid@fourseasons.com in vprašajte, ali je dostop do bazena vključen.",
+"Lokacija je dve minuti od Puerta del Sol, zato se mama lahko pridruži družini takoj po tretmaju."
+],
+"links": [
+{
+"l": "Rezervacija",
+"u": "https://www.fourseasons.com/madrid/spa/",
+"t": 1
+}
+],
+"quiz": [
+{
+"q": "Kako dolg je bazen v tem spaju?",
+"o": [
+"14 metrov",
+"1 meter",
+"100 metrov"
+],
+"a": 0,
+"ok": "Prav! 14 metrov je približno kot tri avtomobili v vrsti."
+}
+],
+"unv": [
+"Cene tretmajev in dostopa",
+"Ali zunanji gostje brez tretmaja sploh lahko vstopijo",
+"Minimalna starost",
+"Delovni čas (esmadrid, posodobljeno 2024)"
+]
+},
+{
+"id": "museo-cerralbo",
+"name": "Museo Cerralbo",
+"cat": "muzej",
+"set": "in",
+"ll": [
+40.4237,
+-3.7145
+],
+"dur": 50,
+"kid": 2,
+"mama": 3,
+"q": "Museo Cerralbo, Calle de Ventura Rodríguez 17, Madrid",
+"price": "Odrasli 3 EUR, znižana 1,50 EUR, mladi do 18 let zastonj. V nedeljo vstop za vse zastonj.",
+"what": "Palača markiza Cerralba iz 19. stoletja, ohranjena tako, kot da bi plemiška družina pravkar odšla. Plesna dvorana z ogledali, lestenci in El Grecom.",
+"kidWhy": "V orožarni stojijo prave viteške oklepe in meči, v plesni dvorani pa se vidi v ogledalih kar desetkrat.",
+"mamaWhy": "Ena najlepših plesnih dvoran v Madridu in mirna palača brez gneče, za samo 3 EUR ali zastonj v nedeljo.",
+"warn": "Ob ponedeljkih zaprto. Popoldan je odprto samo ob četrtkih.",
+"h": {
+"d": "09:30-14:00",
+"4": "09:30-14:00,17:00-19:00",
+"0": "10:00-14:00",
+"1": null
+},
+"facts": [
+"V tej hiši je živel markiz, ki je zbiral umetnine in orožje.",
+"V plesni dvorani so ogledala, ki se gledajo med sabo, zato se dvorana zdi neskončna.",
+"Muzej je čisto blizu egipčanskega templja Debod."
+],
+"tip": [
+"V soboto je odprto le do 15:00, zadnji vstop ob 14:00.",
+"V nedeljo je vstop zastonj, odprto od 10:00 do 15:00, a takrat je več ljudi.",
+"Fant potrebuje dokaz starosti za brezplačen vstop.",
+"Kombinirajte s Templo de Debod, ki je tri minute peš."
+],
+"links": [
+{
+"l": "Spletna stran",
+"u": "https://www.cultura.gob.es/mcerralbo/visita/horariosytarifas.html"
+}
+],
+"quiz": [
+{
+"q": "Kaj lahko vidiš v orožarni tega muzeja?",
+"o": [
+"Viteške oklepe",
+"Dinozavre",
+"Vesoljske rakete"
+],
+"a": 0,
+"ok": "Prav! Markiz je zbiral oklepe, meče in ščite."
+},
+{
+"q": "Zakaj se plesna dvorana zdi neskončna?",
+"o": [
+"Ker so ogledala ena nasproti drugi",
+"Ker nima stropa",
+"Ker je pod zemljo"
+],
+"a": 0,
+"ok": "Bravo! Dve ogledali drug nasproti drugemu pokažeta neskončno vrsto slik."
+}
+],
+"img": [
+"img/x-museo-cerralbo.jpg",
+"Luis García (Zaqarbal), CC BY-SA 3.0, Wikimedia Commons"
+],
+"unv": [
+"Ali so 13. do 16. 11. kakšne sobe zaprte (na strani je splošno obvestilo, da so lahko nekatere sobe zaprte)"
+]
+},
+{
+"id": "descalzas-reales",
+"name": "Monasterio de las Descalzas Reales",
+"cat": "muzej",
+"set": "in",
+"ll": [
+40.4187,
+-3.7063
+],
+"dur": 60,
+"kid": 1,
+"mama": 3,
+"q": "Monasterio de las Descalzas Reales, Plaza de las Descalzas 3, Madrid",
+"price": "Vstopnica z obveznim vodenjem 9 EUR, otroci do 5 let zastonj.",
+"what": "Samostan iz 16. stoletja tik ob Puerta del Sol, v katerem še danes živijo redovnice. Za skromnimi zidovi se skriva pravi zaklad: poslikano stopnišče in tapiserije po Rubensovih risbah.",
+"kidWhy": "Samo pet minut od Sola, za vrati pa skrivno stopnišče, kjer so na stene naslikani ljudje, ki gledajo dol z balkona.",
+"mamaWhy": "Eden najbolj skritih zakladov Madrida: mir samostana, kraljeva umetnost in skupine le z vodnikom, brez gneče.",
+"warn": "Ob ponedeljkih zaprto. Vodenje je dolgo okoli ene ure in skoraj ves čas v španščini, za 7-letnika je to naporno.",
+"h": {
+"d": "10:00-13:00,16:00-17:30",
+"0": "10:00-14:00",
+"1": null
+},
+"facts": [
+"V samostanu še danes živijo redovnice.",
+"Samostan je ustanovila hči cesarja Karla V.",
+"Velike tapiserije so naredili po risbah slikarja Rubensa."
+],
+"tip": [
+"Ogled je možen samo z vodnikom. Sobota: 10:30, 11:00, 12:50, 16:10, 16:45 in 17:20. Nedelja: 10:30, 11:00, 12:30, 13:30 in 13:50. Petek: 10:30, 12:50, 16:10, 16:45 in 17:20.",
+"Vodenje v angleščini od torka do nedelje ob 12:00, sicer v španščini.",
+"Vstopnice kupite vnaprej na spletni strani Patrimonio Nacional, skupine so majhne."
+],
+"links": [
+{
+"l": "Vstopnice",
+"u": "https://tickets.patrimonionacional.es/en/tickets/monasterio-descalzas",
+"t": 1
+}
+],
+"quiz": [
+{
+"q": "Kdo še danes živi v tem samostanu?",
+"o": [
+"Redovnice",
+"Nogometaši",
+"Kralj in kraljica"
+],
+"a": 0,
+"ok": "Prav! Tu že več kot 450 let živijo redovnice."
+}
+],
+"img": [
+"img/x-descalzas-reales.jpg",
+"Luis García (Zaqarbal), CC BY-SA 3.0, Wikimedia Commons"
+],
+"unv": [
+"Cena za otroke od 5 do 12 let (na uradni strani ni posebne otroške cene)",
+"Točno trajanje vodenja"
+]
+},
+{
+"id": "ermita-san-antonio-florida",
+"name": "Ermita de San Antonio de la Florida (Goyevi freski)",
+"cat": "muzej",
+"set": "in",
+"ll": [
+40.4257,
+-3.7259
+],
+"dur": 30,
+"kid": 2,
+"mama": 3,
+"q": "Ermita de San Antonio de la Florida, Glorieta de San Antonio de la Florida 5, Madrid",
+"price": "Vstop zastonj za vse.",
+"what": "Majhna kapela ob reki Manzanares, ki jo je Goya v celoti poslikal s freskami. Pod njimi je tudi Goyev grob.",
+"kidWhy": "Na stropu je Goya naslikal množico ljudi, ki se nagiba čez ograjo, in med njimi poišče fanta, ki pleza po ograji.",
+"mamaWhy": "Goyeva Sikstinska kapela: po prenovi leta 2026 nova razsvetljava pokaže freske v polnih barvah, in to zastonj.",
+"warn": "Malo izven središča, ob Príncipe Pío. Ob ponedeljkih zaprto. Viri se ne ujemajo glede ure zaprtja (19:00 ali 20:00).",
+"free": true,
+"h": {
+"d": "09:30-19:00",
+"1": null
+},
+"facts": [
+"Goya je freske naslikal leta 1798.",
+"Freska je slika, naslikana na svež, še moker omet.",
+"Pod kapelo je pokopan sam Goya."
+],
+"tip": [
+"Kapela je majhna, ogled traja 20 do 30 minut, idealno za kratek postanek.",
+"Do sem pridete z metrojem do Príncipe Pío, nato 10 minut peš.",
+"Tik ob kapeli je Madrid Río z velikimi tobogani za fanta."
+],
+"links": [
+{
+"l": "Spletna stran",
+"u": "https://www.esmadrid.com/informacion-turistica/ermita-de-san-antonio-de-la-florida"
+}
+],
+"quiz": [
+{
+"q": "Kaj je freska?",
+"o": [
+"Slika na mokrem ometu",
+"Sladoled z jagodami",
+"Vrsta nogometne žoge"
+],
+"a": 0,
+"ok": "Prav! Slikar mora hiteti, dokler je omet še moker."
+},
+{
+"q": "Kdo je pokopan pod to kapelo?",
+"o": [
+"Slikar Goya",
+"Kralj Filip",
+"Lamine Yamal"
+],
+"a": 0,
+"ok": "Bravo! Tu počiva Francisco de Goya, ki je kapelo poslikal."
+}
+],
+"img": [
+"img/x-ermita-san-antonio-florida.jpg",
+"FouPic, CC BY 2.0, Wikimedia Commons"
+],
+"unv": [
+"Točna ura zaprtja v novembru (19:00 ali 20:00)",
+"Ali je čas zadnjega vstopa pred zaprtjem"
+]
+},
+{
+"id": "adentro-szeinblum",
+"name": "Adentro!, Diana Szeinblum (Festival de Otoño)",
+"cat": "dogodek",
+"set": "in",
+"ll": [
+40.4382,
+-3.7052
+],
+"dur": 50,
+"kid": 1,
+"mama": 2,
+"q": "Teatros del Canal, Calle de Cea Bermúdez 1, Madrid",
+"price": "20 EUR, znižano 15 EUR (mladi do 25 let, starejši od 65 let, velike družine).",
+"what": "Sodobna plesna predstava argentinske koreografinje Diane Szeinblum v okviru Festivala de Otoño. Trije plesalci na novo razstavijo argentinsko ljudsko plesno izročilo.",
+"kidWhy": "Predstava ni za otroke, fant gre medtem z očetom na sladoled ali na igrišče v Chamberíju.",
+"mamaWhy": "Za nekdanjo plesalko kratka, 50-minutna sodobna plesna predstava na velikem mednarodnem festivalu, ob 18:00, ko je še čas za večerjo z družino.",
+"warn": "Program je namenjen odraslim, starostna priporočila ni. Fant naj bo medtem z očetom. Teatros del Canal so v Chamberíju, okoli 15 minut z metrojem iz središča.",
+"from": "2026-11-14",
+"to": "2026-11-15",
+"h": {
+"d": "18:00-18:50"
+},
+"facts": [
+"Festival de Otoño je velik jesenski festival gledališča in plesa v Madridu.",
+"Teatros del Canal imajo več dvoran, ena se imenuje Črna dvorana."
+],
+"tip": [
+"Realno je le sobota 14. 11. ob 18:00, ker je v nedeljo zvečer tekma.",
+"Po začetku predstave ne spustijo nikogar več v dvorano, pridite pravočasno.",
+"Dvorana Sala Negra je nad parterjem dvorane Sala Roja, metro Canal."
+],
+"links": [
+{
+"l": "Vstopnice",
+"u": "https://www.cdcm.madrid/teatroscanal/espectaculo/diana-szeinblum",
+"t": 1
+}
+],
+"quiz": [
+{
+"q": "Iz katere države prihaja koreografinja Diana Szeinblum?",
+"o": [
+"Iz Argentine",
+"Iz Japonske",
+"Iz Norveške"
+],
+"a": 0,
+"ok": "Prav! Iz Argentine, kjer igra tudi Messi."
+}
+],
+"img": [
+"img/x-adentro-szeinblum.jpg",
+"Luis García (Zaqarbal), CC BY-SA 3.0, Wikimedia Commons"
+],
+"unv": [
+"Starostno priporočilo",
+"Razpoložljivost vstopnic"
+]
 }
 ]);
 (function(){const Q={"sol": {"quiz": [{"q": "Kaj poskuša doseči medved na kipu?", "o": ["Plodove drevesa", "Med iz panja", "Ribo v vodi"], "a": 0, "ok": "Medved se opira na drevo madroño in steguje gobček proti rdečim plodovom, ki so podobni jagodam."}, {"q": "Kateri svetleči napis je na strehi stavbe nad Solom?", "o": ["Coca-Cola", "Tío Pepe", "Real Madrid"], "a": 1, "ok": "Napis Tío Pepe s steklenico, klobukom in kitaro sveti nad Solom od leta 1936."}, {"q": "Ugani: koliko let je stara velika ura na rdeči stavbi?", "o": ["Okoli 20 let", "Okoli 1.000 let", "Okoli 160 let"], "a": 2, "ok": "Uro so prvič zagnali leta 1866. Prav ta ura odbije novo leto za vso Španijo."}], "facts": ["Uro na Solu je leta 1866 izdelal in mestu podaril urar José Rodríguez de Losada.", "Napis Tío Pepe sveti nad Solom od leta 1936. Na njem je steklenica s klobukom in kitaro."]}, "mayor": {"quiz": [{"q": "Preštej: koliko vhodov z loki vodi na trg?", "o": ["2", "9", "20"], "a": 1, "ok": "Na trg vodi 9 vhodov. Najbolj znan je Arco de Cuchilleros s strmimi stopnicami."}, {"q": "Hiša s pisanimi slikami se imenuje Casa de la Panadería. Kaj je bila nekoč?", "o": ["Pekarna", "Bolnišnica", "Šola"], "a": 0, "ok": "Panadería pomeni pekarna. Tu so imeli glavno mestno pekarno."}, {"q": "Kaj vidiš na slikah na tej hiši?", "o": ["Nogometaše", "Bogove in znamenja horoskopa", "Avtomobile"], "a": 1, "ok": "Slike je leta 1992 naslikal Carlos Franco. Na njih so boginja Kibela, bogovi in znamenja horoskopa."}], "facts": ["Pisane slike na Casa de la Panadería so naslikali šele leta 1992, čeprav je hiša stara več kot 400 let.", "Najbolj znan vhod na trg je Arco de Cuchilleros. Ime pomeni lok nožarjev."]}, "latina": {"quiz": [{"q": "Četrt La Latina se imenuje po ženski. Kdo je bila?", "o": ["Učiteljica kraljice Izabele", "Gusarka", "Nogometašica"], "a": 0, "ok": "Beatriz Galindo je znala odlično latinsko, zato so ji rekli La Latina. Kraljico Izabelo je učila latinščino."}, {"q": "Kaj je tapa, ki jo ješ v barih te četrti?", "o": ["Vrsta klobuka", "Nogometni udarec", "Majhen grižljaj hrane"], "a": 2, "ok": "Tapa dobesedno pomeni pokrov. Danes je to majhen krožnik hrane."}], "facts": ["Beatriz Galindo, po kateri se imenuje La Latina, je tu okoli leta 1500 dala zgraditi bolnišnico.", "Na Plaza de la Paja je za zidom skrit Vrt princa Anglone iz 18. stoletja."]}, "rastro": {"quiz": [{"q": "Na začetku sejma, na Plaza de Cascorro, stoji kip vojaka. Kaj nosi?", "o": ["Nogometno žogo", "Kanto petroleja in puško", "Ribo"], "a": 1, "ok": "To je Eloy Gonzalo, junak iz leta 1896. S kanto petroleja je sam zažgal sovražno utrdbo."}, {"q": "Kaj pomeni beseda rastro?", "o": ["Sled", "Zaklad", "Sejem"], "a": 0, "ok": "Rastro pomeni sled. Nekoč so tu vlekli živali do strojarn in za njimi je ostajala sled."}], "facts": ["Glavna ulica sejma se imenuje Ribera de Curtidores, kar pomeni breg strojarjev. Tu so nekoč strojili kože.", "Kip na Plaza de Cascorro predstavlja vojaka Eloya Gonzala. Leta 1896 se je boril na Kubi."]}, "palacio": {"quiz": [{"q": "Zakaj so zgradili to palačo?", "o": ["Kralj je hotel bazen", "Stari grad je pogorel", "Zaradi potresa"], "a": 1, "ok": "Stari grad Alcázar je pogorel na božični večer leta 1734. Novo palačo so začeli graditi leta 1738."}, {"q": "Katere živali stražijo kraljev prestol v Prestolni dvorani?", "o": ["Levi", "Medvedi", "Orli"], "a": 0, "ok": "Ob prestolu stojijo bronasti levi."}, {"q": "Palača hrani godala slavnega mojstra. Katerega?", "o": ["Mozarta", "Messija", "Stradivarija"], "a": 2, "ok": "Kraljeva zbirka ima okrašena godala Antonia Stradivarija, stara več kot 300 let."}], "facts": ["Prejšnji grad na tem mestu je pogorel na božični večer leta 1734. Novo palačo so gradili 17 let.", "V palači hranijo godala slavnega izdelovalca Stradivarija, ki so stara več kot 300 let."]}, "straza": {"quiz": [{"q": "Na katere dneve je ta menjava straže?", "o": ["Vsak dan", "Ob sredah in sobotah", "Samo za božič"], "a": 1, "ok": "Ob sredah in sobotah od 11. do 14. ure, vsakih 30 minut."}, {"q": "Kako se imenuje vojaška enota, ki varuje kralja?", "o": ["Kraljeva garda", "Gasilci", "Mestni redarji"], "a": 0, "ok": "Po špansko Guardia Real. Ima vojake peš in na konjih."}], "facts": ["Kraljeva garda, Guardia Real, ima vojake peš, na konjih in svojo godbo."]}, "oriente": {"quiz": [{"q": "Na koliko nogah stoji konj kralja Filipa IV. na sredini trga?", "o": ["Na dveh zadnjih", "Na štirih", "Na treh"], "a": 0, "ok": "Konj se vzpenja samo na zadnjih nogah. To je bil prvi tako velik kip na svetu."}, {"q": "Kateri slavni znanstvenik je pomagal, da se kip ne prevrne?", "o": ["Albert Einstein", "Galileo Galilei", "Isaac Newton"], "a": 1, "ok": "Galileo je svetoval, naj bo zadnji del kipa poln in težak, sprednji pa votel."}, {"q": "Kaj stoji na drugi strani trga, nasproti palače?", "o": ["Stadion", "Živalski vrt", "Opera Teatro Real"], "a": 2, "ok": "Teatro Real je madridska operna hiša."}], "facts": ["Kip Filipa IV. je iz leta 1640, izdelal ga je Pietro Tacca. Zadnji del je poln, sprednji votel, da konj ne pade.", "Kamniti kralji okoli trga so bili narejeni za streho palače, a so jih nato postavili na tla."]}, "debod": {"quiz": [{"q": "Ugani: v koliko zabojih so tempelj pripeljali v Španijo?", "o": ["10", "Okoli 1.350", "1 milijon"], "a": 1, "ok": "Kamni so v okoli 1.350 zabojih z ladjo pripluli v Valencio, nato so jih s tovornjaki pripeljali v Madrid."}, {"q": "Kaj obdaja tempelj?", "o": ["Voda", "Pesek in kamele", "Sneg"], "a": 0, "ok": "Okoli templja je plitva voda. Spominja na reko Nil, ob kateri je tempelj stal v Egiptu."}, {"q": "Kateremu bogu so tempelj posvetili Egipčani?", "o": ["Zevsu", "Neptunu", "Amonu"], "a": 2, "ok": "Tempelj je bil posvečen bogu Amonu in boginji Izidi."}], "facts": ["Kamne templja je leta 1970 iz Egipta pripeljala ladja Benisa. Zabojev je bilo okoli 1.350.", "Tempelj so v Madridu za obiskovalce odprli leta 1972."]}, "espana": {"quiz": [{"q": "Na kateri živali jaha Don Kihot?", "o": ["Na konju", "Na oslu", "Na kameli"], "a": 0, "ok": "Njegov suhi konj se imenuje Rocinante."}, {"q": "Na kateri živali jaha njegov prijatelj Sančo Pansa?", "o": ["Na konju", "Na oslu", "Na biku"], "a": 1, "ok": "Sančo jaha osla. Sam je majhen in okrogel, Don Kihot pa dolg in suh."}, {"q": "Kdo je napisal zgodbo o Don Kihotu?", "o": ["Pablo Picasso", "William Shakespeare", "Miguel de Cervantes"], "a": 2, "ok": "Spomenik na trgu je posvečen pisatelju Cervantesu. On sedi zgoraj in gleda svoja junaka."}], "facts": ["Igrišče se imenuje Isla de Barataria. To je otok, ki ga je v zgodbi v vladanje dobil Sančo Pansa.", "Nad trgom stojita nebotičnika Torre de Madrid, visok 142 metrov, in Edificio España, visok 117 metrov."]}, "granvia": {"quiz": [{"q": "Kaj stoji na vrhu zlate kupole stavbe Metrópolis?", "o": ["Medved", "Krilata boginja", "Nogometna žoga"], "a": 1, "ok": "To je krilata boginja zmage. Prej je na kupoli stal ptič feniks."}, {"q": "Kako so leta 1910 začeli graditi Gran Vío?", "o": ["Kralj je udaril s srebrnim krampom", "Z ognjemetom", "Z nogometno tekmo"], "a": 0, "ok": "Kralj Alfonz XIII. je 4. aprila 1910 prvi udaril s srebrnim krampom."}], "facts": ["Gran Vío so začeli graditi leta 1910. Kralj Alfonz XIII. je prvi udaril s srebrnim krampom.", "Na kupoli Metrópolisa stoji krilata boginja zmage. Prej je tam stal ptič feniks."]}, "cibeles": {"quiz": [{"q": "Kaj je skrito pod veliko stavbo Banke Španije ob fontani?", "o": ["Trezor z zlatom", "Bazen", "Podzemni stadion"], "a": 0, "ok": "Globoko pod banko je trezor, kjer Španija hrani zlato."}, {"q": "⚽ Koga je Španija premagala v finalu Eura 2024?", "o": ["Francijo", "Anglijo", "Italijo"], "a": 1, "ok": "2:1 v Berlinu. To nedeljo je spet Španija proti Angliji!"}, {"q": "Ugani: koliko je stara fontana?", "o": ["Okoli 20 let", "Okoli 2.000 let", "Okoli 240 let"], "a": 2, "ok": "Fontano so izdelali med letoma 1777 in 1782."}], "facts": ["Pod stavbo Banke Španije ob Cibelesu je trezor, v katerem hranijo zlato.", "Leva, ki vlečeta voz, sta iz stare zgodbe: boginja je zaljubljenca Atalanto in Hipomena spremenila v leva."]}, "neptuno": {"quiz": [{"q": "Kakšne oblike je Neptunov voz?", "o": ["Kot avto", "Kot velika školjka", "Kot čoln"], "a": 1, "ok": "Neptun se pelje v vozu v obliki školjke, vlečeta pa ga morska konja."}, {"q": "⚽ Kateri slovenski vratar slavi naslove z Atléticom prav tu?", "o": ["Jan Oblak", "Samir Handanović", "Luka Dončić"], "a": 0, "ok": "Jan Oblak je vratar Atlética od leta 2014."}, {"q": "Kdo je Neptun?", "o": ["Kralj Španije", "Bog vetra", "Bog morja"], "a": 2, "ok": "Neptun je rimski bog morja. Zato drži trizob."}], "facts": ["⚽ Jan Oblak je za Atlético odigral že več kot 550 tekem. Noben vratar v zgodovini kluba jih nima več.", "Fontano je zasnoval arhitekt Ventura Rodríguez, zgradili so jo med letoma 1780 in 1786."]}, "alcala": {"quiz": [{"q": "Pojdi okoli vrat. Ali sta obe strani enaki?", "o": ["Da, čisto enaki", "Ne, sta različni", "Ena stran je iz stekla"], "a": 1, "ok": "Arhitekt Sabatini je kralju pokazal dva načrta. Kralju sta bila všeč oba, zato je vsaka stran drugačna."}, {"q": "Kateri kralj je dal postaviti vrata?", "o": ["Karel III.", "Filip III.", "Alfonz XII."], "a": 0, "ok": "Karel III. jih je dal zgraditi leta 1778."}, {"q": "Čemu so vrata služila nekoč?", "o": ["Bila so garaža", "Bila so most", "Bila so vhod v mesto"], "a": 2, "ok": "Skozi ta vrata si prišel v Madrid po cesti iz mesta Alcalá."}], "facts": ["Vrata so iz leta 1778. Vsaka stran je drugačna, ker je kralj izbral oba Sabatinijeva načrta.", "Leta 1986 sta pevca Ana Belén in Víctor Manuel o vratih posnela znano pesem Puerta de Alcalá."]}, "retiro": {"quiz": [{"q": "Kateri kralj sedi na konju na velikem spomeniku ob jezeru?", "o": ["Filip IV.", "Alfonz XII.", "Karel III."], "a": 1, "ok": "To je kralj Alfonz XII. Spomenik ima stebre, leve in stopnice do vode."}, {"q": "⚽ Ugani: koliko nogometnih igrišč bi šlo v park Retiro?", "o": ["Več kot 150", "5", "10.000"], "a": 0, "ok": "Park meri več kot 100 hektarjev. Eno igrišče ima manj kot 1 hektar."}, {"q": "Katera žival s košatim repom skače po drevesih Retira?", "o": ["Opica", "Koala", "Veverica"], "a": 2, "ok": "V Retiru živijo rdeče veverice. Poglej v krošnje!"}], "facts": ["Retiro je bil nekoč vrt kraljev. Za vse ljudi so ga odprli leta 1868.", "Od leta 2021 sta Retiro in Paseo del Prado na Unescovem seznamu svetovne dediščine."]}, "retiroigra": {"quiz": [{"q": "Kaj pomeni beseda retiro?", "o": ["Igrišče", "Kraj za počitek", "Jezero"], "a": 1, "ok": "Kralji so sem prihajali počivat. Buen Retiro pomeni dober umik."}, {"q": "⚽ Katero drevo je na grbu Madrida in Atlética?", "o": ["Madroño z rdečimi plodovi", "Bor", "Palma"], "a": 0, "ok": "Madroño ima rdeče plodove, podobne jagodam. Na grbu se nanj opira medved."}], "facts": ["Vrata pri igrišču se imenujejo Puerta de la Independencia, vrata neodvisnosti.", "Ime Buen Retiro pomeni dober umik. Tu so kralji počivali od mestnega vrveža."]}, "madridrio": {"quiz": [{"q": "Kaj vozi pod parkom Madrid Río?", "o": ["Podmornice", "Avtomobili v tunelih", "Nič, spodaj je skala"], "a": 1, "ok": "Pod parkom je obvoznica M-30 v tunelih. Na vrhu so leta 2011 odprli park."}, {"q": "⚽ Kaj je bilo posebnega pod tribuno starega stadiona Atlética Vicente Calderón?", "o": ["Pod njo je tekla avtocesta", "Bazen", "Živalski vrt"], "a": 0, "ok": "Pod glavno tribuno je vozila avtocesta M-30. Stadiona danes ni več."}, {"q": "Kako se imenuje reka, ob kateri teče park?", "o": ["Donava", "Sava", "Manzanares"], "a": 2, "ok": "Reka Manzanares je majhna, zato so se pesniki iz nje radi šalili."}], "facts": ["Most Puente de Segovia čez reko Manzanares je iz leta 1584. To je najstarejši most v Madridu.", "⚽ Pod glavno tribuno starega stadiona Vicente Calderón je tekla avtocesta M-30."]}, "faro": {"quiz": [{"q": "Faro pomeni svetilnik. Koliko je od Madrida do morja?", "o": ["1 km", "Okoli 300 km", "Morje je pod stolpom"], "a": 1, "ok": "Madrid je sredi Španije. Do morja je okoli 300 km, zato to ni pravi svetilnik."}, {"q": "Ugani: koliko je visok ves stolp?", "o": ["110 m", "30 m", "1.000 m"], "a": 0, "ok": "Ves stolp meri 110 metrov, razgledna ploščad je na 92 metrih."}], "facts": ["Stolp so zgradili leta 1992, ko je bil Madrid evropska prestolnica kulture.", "Stolp je bil dolgo zaprt. Za obiskovalce so ga znova odprli leta 2015."]}, "circulo": {"quiz": [{"q": "Na strehi stoji velikanski kip boginje Minerve. Kaj ima na glavi?", "o": ["Krono iz cvetja", "Kapo s šiltom", "Čelado"], "a": 2, "ok": "Minerva je boginja modrosti in tudi bojevnica, zato nosi čelado in sulico."}, {"q": "Ugani: koliko tehta bronasta Minerva?", "o": ["Okoli 3.000 kg", "Okoli 30 kg", "Okoli 3 milijone kg"], "a": 0, "ok": "Tehta okoli 3.000 kg, kot dva avtomobila. Visoka je 7,5 metra."}, {"q": "Kdo je Minerva?", "o": ["Boginja modrosti", "Kraljica Španije", "Morska deklica"], "a": 0, "ok": "Minerva je rimska boginja modrosti in umetnosti. Hiša pod njo je hiša umetnosti."}], "facts": ["Bronasta Minerva na strehi je visoka 7,5 metra in tehta okoli 3.000 kg. Gor so jo postavili leta 1966.", "Stavbo je zasnoval arhitekt Antonio Palacios. Odprli so jo leta 1926."]}, "prado": {"quiz": [{"q": "Katera žival leži na tleh na sliki Las Meninas?", "o": ["Mačka", "Pes", "Papiga"], "a": 1, "ok": "Velik pes mirno leži, deček pa ga drega z nogo."}, {"q": "Ugani: koliko let je star Prado?", "o": ["Več kot 200", "50", "1.000"], "a": 0, "ok": "Prado so odprli 19. novembra 1819. Ta mesec bo star 207 let."}, {"q": "Čigav kip stoji pred glavnim vhodom?", "o": ["Kralja", "Nogometaša", "Slikarja Velázqueza"], "a": 2, "ok": "Velázquez je naslikal Las Meninas. Zato ima kip pred muzejem."}], "facts": ["Prado so odprli 19. novembra 1819. Pred glavnim vhodom stoji kip slikarja Velázqueza.", "Na sliki Las Meninas je 11 ljudi in en pes. Kralj in kraljica sta skrita v ogledalu."]}, "naval": {"quiz": [{"q": "Najdragocenejši zaklad muzeja je zemljevid iz leta 1500. Kaj je na njem prvič narisano?", "o": ["Luna", "Amerika", "Slovenija"], "a": 1, "ok": "Juan de la Cosa je plul s Kolumbom. Njegov zemljevid je najstarejši ohranjeni zemljevid z Ameriko."}, {"q": "Kako so se velike ladje premikale, preden so imele motorje?", "o": ["Z vetrom v jadrih in z vesli", "S sončnimi celicami", "Z elektriko"], "a": 0, "ok": "Veter je napihnil jadra, mornarji pa so veslali."}], "facts": ["Zemljevid Juana de la Cose iz leta 1500 je najstarejši ohranjeni zemljevid, na katerem je Amerika.", "Pomorski muzej so ustanovili leta 1843."]}, "ciencias": {"quiz": [{"q": "Kateri dinozaver ima tu dolgo okostje z dolgim vratom in repom?", "o": ["Tiranozaver", "Pterodaktil", "Diplodok"], "a": 2, "ok": "To je kopija diplodoka. Leta 1913 jo je kralju Alfonzu XIII. podaril Američan Andrew Carnegie."}, {"q": "Megaterij je bil orjaški ...", "o": ["lenivec", "pes", "pajek"], "a": 0, "ok": "Megaterij je bil velik kot slon. Okostje so v 18. stoletju pripeljali iz Argentine."}, {"q": "Koliko krakov in lovk ima orjaški lignji?", "o": ["4", "10", "100"], "a": 1, "ok": "Ima 8 krakov in 2 dolgi lovki, skupaj 10."}], "facts": ["Okostje megaterija so sestavili že leta 1788. Je eno prvih sestavljenih fosilnih okostij na svetu.", "Muzej je leta 1771 ustanovil kralj Karel III."]}, "caixa": {"quiz": [{"q": "Kaj je bila ta stavba nekoč?", "o": ["Bolnišnica", "Elektrarna", "Grad"], "a": 1, "ok": "Bila je elektrarna Mediodía iz leta 1899."}, {"q": "Zakaj se zdi, da stavba lebdi nad trgom?", "o": ["Spodnji del zidu so odrezali", "Ker stoji na balonih", "Ker je iz papirja"], "a": 0, "ok": "Arhitekta Herzog in de Meuron sta odstranila spodnji del, zato opeke visijo nad tlemi."}, {"q": "Ugani: koliko je visok zeleni zid?", "o": ["2 m", "200 m", "Okoli 24 m"], "a": 2, "ok": "Zid je visok okoli 24 metrov, kot osemnadstropna hiša."}], "facts": ["Zeleni zid je zasnoval Francoz Patrick Blanc. Rastline rastejo brez zemlje, vodo dobijo po ceveh.", "Stavba je bila elektrarna iz leta 1899. Zdaj je v njej muzej."]}, "man": {"quiz": [{"q": "Katera žival je največkrat narisana na stropu jame Altamira?", "o": ["Bizon", "Lev", "Pingvin"], "a": 0, "ok": "Ljudje iz kamene dobe so na strop naslikali rdeče bizone."}, {"q": "Ugani: koliko je stara Dama iz Elcheja, slavni kamniti kip?", "o": ["Okoli 40 let", "Okoli 2.400 let", "Okoli 10 let"], "a": 1, "ok": "Kip so Iberci izklesali pred okoli 2.400 leti. Na glavi ima velika okrogla kolesa."}], "facts": ["Poslikave v jami Altamira so stare več kot 14.000 let.", "Damo iz Elcheja so našli leta 1897 blizu mesta Elche."]}, "zoo": {"quiz": [{"q": "Kaj jedo pande skoraj ves dan?", "o": ["Meso", "Bambus", "Sladoled"], "a": 1, "ok": "Pande jedo bambus več ur na dan."}, {"q": "Kako se imenujeta madridski pandi?", "o": ["Jin Xi in Zhu Yu", "Messi in Ronaldo", "Pip in Pap"], "a": 0, "ok": "Pripotovala sta iz Kitajske aprila 2024."}, {"q": "Kje se je leta 1982 rodil prvi panda mladič v živalskem vrtu v Evropi?", "o": ["V Londonu", "V Ljubljani", "Tukaj v Madridu"], "a": 2, "ok": "Imenoval se je Chu Lin."}], "facts": ["Pandi Jin Xi in Zhu Yu sta v Madrid prišla iz Kitajske aprila 2024.", "Leta 1982 se je tu rodil Chu Lin, prvi panda v Evropi, rojen v živalskem vrtu."]}, "iluzije": {"quiz": [{"q": "V katerem mestu so odprli prvi Muzej iluzij?", "o": ["V New Yorku", "V Zagrebu", "V Madridu"], "a": 1, "ok": "Leta 2015 v Zagrebu na Hrvaškem, čisto blizu Slovenije."}, {"q": "V vrtečem se tunelu se ti zdi, da se vrtiš. Kaj se v resnici vrti?", "o": ["Samo stene okoli tebe", "Most pod tabo", "Ti"], "a": 0, "ok": "Most stoji pri miru, vrti se samo tunel. Možgani se zmotijo."}, {"q": "V Amesovi sobi je en človek velikan, drugi palček. Zakaj?", "o": ["Ker eden čara", "Ker ogledala rastejo", "Soba je postrani in en kot je dlje"], "a": 2, "ok": "Soba je poševna. Oko misli, da je kvadratna, zato ljudi vidi napačno veliki."}], "facts": ["Prvi Muzej iluzij so odprli leta 2015 v Zagrebu na Hrvaškem."]}, "cera": {"quiz": [{"q": "Iz česa so lutke?", "o": ["Iz voska", "Iz čokolade", "Iz plastelina"], "a": 0, "ok": "Vosek je kot snov za sveče. Zato se lutke ne smejo greti."}, {"q": "⚽ Kateri nogometaš ima največ Zlatih žog?", "o": ["Cristiano Ronaldo", "Lionel Messi", "Lamine Yamal"], "a": 1, "ok": "Messi jih ima 8. To je rekord."}], "facts": ["Muzej voščenih lutk v Madridu so odprli leta 1972.", "Voščenim lutkam lase vstavljajo enega po enega."]}, "planetario": {"quiz": [{"q": "Koliko planetov kroži okoli Sonca?", "o": ["8", "9", "20"], "a": 0, "ok": "Merkur, Venera, Zemlja, Mars, Jupiter, Saturn, Uran in Neptun."}, {"q": "Ugani: koliko časa potuje svetloba od Sonca do nas?", "o": ["1 sekundo", "Okoli 8 minut", "1 leto"], "a": 1, "ok": "Sončna svetloba pride do Zemlje v okoli 8 minutah."}, {"q": "Kateri planet je največji?", "o": ["Mars", "Zemlja", "Jupiter"], "a": 2, "ok": "V Jupiter bi šlo več kot 1.000 Zemelj."}], "facts": ["Planetarij v Madridu so odprli leta 1986.", "Halleyev komet se vrne vsakih 75 do 76 let. Naslednjič ga bomo videli leta 2061."]}, "ferrocarril": {"quiz": [{"q": "Kam je leta 1851 vozil prvi vlak iz Madrida?", "o": ["V Aranjuez", "V Pariz", "V Ljubljano"], "a": 0, "ok": "Proga od Madrida do Aranjueza je bila prva železnica v Madridu."}, {"q": "Kako se imenuje turistični vlak, ki vozi s te postaje v Aranjuez?", "o": ["Hogwarts Express", "Vlak jagod", "Čokoladni vlak"], "a": 1, "ok": "Tren de la Fresa, vlak jagod. Aranjuez slovi po jagodah."}, {"q": "Kaj je poganjalo stare lokomotive?", "o": ["Bencin", "Sonce", "Para iz vode in premoga"], "a": 2, "ok": "Premog je grel vodo, para pa je poganjala kolesa."}], "facts": ["Postajo Delicias, kjer je muzej, so odprli leta 1880.", "S te postaje odpelje Tren de la Fresa, stari vlak do Aranjueza."]}, "legends": {"quiz": [{"q": "⚽ Koliko let je imel Pelé, ko je prvič postal svetovni prvak?", "o": ["17", "30", "12"], "a": 0, "ok": "Pelé je bil star 17 let, ko je leta 1958 z Brazilijo osvojil svetovno prvenstvo."}, {"q": "⚽ Koliko Zlatih žog ima Messi?", "o": ["2", "8", "20"], "a": 1, "ok": "Messi ima 8 Zlatih žog. Nihče jih nima več."}, {"q": "⚽ Kdo je za Španijo zabil gol v finalu SP 2026?", "o": ["Andrés Iniesta", "Harry Kane", "Ferran Torres"], "a": 2, "ok": "Ferran Torres je zabil v 106. minuti. Španija je premagala Argentino 1:0."}], "facts": ["⚽ Pelé je na SP 1958 postal svetovni prvak pri 17 letih.", "⚽ Messi ima rekordnih 8 Zlatih žog."]}, "skywalk": {"quiz": [{"q": "⚽ Po kom se imenuje stadion?", "o": ["Po predsedniku kluba", "Po kralju", "Po reki"], "a": 0, "ok": "Santiago Bernabéu je igral za Real, potem pa je bil 35 let predsednik kluba."}, {"q": "⚽ Ugani: kdaj so stadion odprli?", "o": ["Leta 2020", "Leta 1947", "Leta 1800"], "a": 1, "ok": "Odprli so ga leta 1947. Zdaj je ves prenovljen in ima streho."}, {"q": "⚽ Kdo je zmagal v klasiku 10. maja 2026, ko je Barça postala prvak?", "o": ["Real 3:0", "Neodločeno", "Barcelona 2:0"], "a": 2, "ok": "Barça je doma premagala Real 2:0 in osvojila 29. naslov prvaka."}], "facts": ["⚽ Stadion so odprli leta 1947. Santiago Bernabéu je bil predsednik Reala od leta 1943 do 1978.", "⚽ Real Madrid so ustanovili 6. marca 1902."]}, "tour": {"quiz": [{"q": "⚽ Kakšne barve je domači dres Reala?", "o": ["Bel", "Rdeč", "Moder"], "a": 0, "ok": "Zato igralcem Reala pravijo los blancos, beli."}, {"q": "⚽ Koliko naslovov španskega prvaka ima Real?", "o": ["3", "36", "100"], "a": 1, "ok": "Real jih ima 36, kar je rekord. Barcelona jih ima 29."}, {"q": "⚽ Katero številko je v Realu nosil Cristiano Ronaldo?", "o": ["10", "1", "7"], "a": 2, "ok": "Ronaldo je nosil številko 7 in za Real zabil 450 golov."}], "facts": ["⚽ Igralcem Reala pravijo los blancos, beli, zaradi belih dresov.", "⚽ Real ima 36 naslovov španskega prvaka, Barcelona 29."]}, "market": {"quiz": [{"q": "⚽ Navijačem Reala pravijo merengues. Kaj je merengue?", "o": ["Vrsta ribe", "Sladica iz beljakov in sladkorja", "Avto"], "a": 1, "ok": "Meringa je bela kot dresi Reala. Od tod vzdevek."}, {"q": "Skozi katera vrata greš v Bernabéu Market?", "o": ["Puerta 54", "Puerta 1", "Puerta 1.000"], "a": 0, "ok": "Vhod je pri vratih 54."}], "facts": ["⚽ Navijačem Reala pravijo merengues, ker so njihovi dresi beli kot meringe."]}, "rmstore": {"quiz": [{"q": "⚽ Kaj je na vrhu grba Reala?", "o": ["Medved", "Krona", "Ptič"], "a": 1, "ok": "Real pomeni kraljevi. Kralj Alfonz XIII. je klubu ta naziv dal leta 1920."}, {"q": "⚽ Kateri klub je Realov največji tekmec?", "o": ["Barcelona", "Celje", "Bayern"], "a": 0, "ok": "Tekma Real proti Barceloni se imenuje El Clásico."}, {"q": "⚽ Kdo je najboljši strelec v zgodovini Reala?", "o": ["Lamine Yamal", "Jan Oblak", "Cristiano Ronaldo"], "a": 2, "ok": "Ronaldo je za Real zabil 450 golov."}], "facts": ["⚽ Real pomeni kraljevi. Ta naziv je klub dobil leta 1920 od kralja Alfonza XIII.", "⚽ Cristiano Ronaldo je za Real zabil 450 golov in je najboljši strelec v zgodovini kluba."]}, "metropolitano": {"quiz": [{"q": "⚽ Navijačem Atlética pravijo colchoneros. Kaj to pomeni?", "o": ["Kuharji", "Izdelovalci žimnic", "Mornarji"], "a": 1, "ok": "Rdeče-bele proge so podobne starim žimnicam."}, {"q": "⚽ Kako se je končala tekma Anglija proti Španiji septembra 2026 na Wembleyju?", "o": ["Španija je zmagala 3:2", "Anglija je zmagala 1:0", "0:0"], "a": 0, "ok": "Yamal je zabil gol. To nedeljo je povratna tekma prav tukaj."}, {"q": "⚽ Kako se je stadion imenoval, ko so ga leta 2017 odprli?", "o": ["Camp Nou", "Wembley", "Wanda Metropolitano"], "a": 2, "ok": "Najprej Wanda Metropolitano, nato Cívitas Metropolitano, zdaj Riyadh Air Metropolitano."}], "facts": ["⚽ Leta 1929 je Španija na starem stadionu Metropolitano v Madridu premagala Anglijo 4:3. To je bil prvi poraz Anglije proti ekipi izven Britanskega otočja.", "⚽ Stadion se je imenoval Wanda Metropolitano, nato Cívitas Metropolitano, zdaj Riyadh Air Metropolitano."]}, "atmstore": {"quiz": [{"q": "⚽ Zakaj ima Atlético rdeče-bele proge?", "o": ["Blago za žimnice je bilo najcenejše", "Tako je zastava Madrida", "Izbral jih je otrok"], "a": 0, "ok": "Prvi dresi so bili modro-beli. Okoli leta 1911 so izbrali rdeče-belo blago za žimnice, ker je bilo najcenejše."}, {"q": "⚽ Kdo je najboljši strelec v zgodovini Atlética?", "o": ["Jan Oblak", "Antoine Griezmann", "Lionel Messi"], "a": 1, "ok": "Griezmann je zabil 211 golov. Poleti 2026 je odšel v Orlando v ZDA."}, {"q": "⚽ Katera žival je na grbu Atlética?", "o": ["Lev", "Bik", "Medved"], "a": 2, "ok": "Medved ob drevesu madroño, kot na kipu na Solu."}], "facts": ["⚽ Atlético so leta 1903 ustanovili baskovski študentje kot podružnico kluba Athletic iz Bilbaa.", "⚽ Atlético ima 11 naslovov španskega prvaka."]}, "fnac": {"quiz": [{"q": "Iz katere države je LEGO?", "o": ["Danska", "Španija", "Kitajska"], "a": 0, "ok": "Ime pride iz danskih besed leg godt, kar pomeni igraj se dobro."}, {"q": "Trg pred trgovino se imenuje Callao. Po čem?", "o": ["Po vrsti ribe", "Po pristanišču v Peruju", "Po kralju"], "a": 1, "ok": "Callao je pristanišče v Peruju. Tam je bila leta 1866 bitka."}], "facts": ["Trg Callao se imenuje po bitki pri pristanišču Callao v Peruju leta 1866.", "FNAC je francoska trgovina. Prvo so odprli v Parizu leta 1954."]}, "miniso": {"quiz": [{"q": "Iz katere države je Miniso?", "o": ["Brazilija", "Kitajska", "Slovenija"], "a": 1, "ok": "Miniso so ustanovili leta 2013 na Kitajskem."}, {"q": "Kako se po špansko reče plišasta igrača?", "o": ["Pelota", "Pan", "Peluche"], "a": 2, "ok": "Peluche je plišek. Pelota pomeni žoga, pan pa kruh."}], "facts": ["Miniso so ustanovili leta 2013 na Kitajskem."]}, "wow": {"quiz": [{"q": "Kako se po špansko reče trgovina?", "o": ["Tienda", "Tren", "Torre"], "a": 0, "ok": "Tienda je trgovina. Tren je vlak, torre pa stolp."}, {"q": "Ugani: kako visoka je stavba Telefónica nekaj korakov naprej po Gran Víi?", "o": ["9 m", "89 m", "890 m"], "a": 1, "ok": "Visoka je 89 metrov. Ko so jo leta 1929 odprli, je bila najvišja stavba v Španiji."}], "facts": ["Stavba Telefónica na Gran Víi 28 je visoka 89 metrov. Ob odprtju leta 1929 je bila najvišja v Španiji."]}, "sanmiguel": {"quiz": [{"q": "Iz česa je zgrajena tržnica?", "o": ["Iz lesa", "Iz ledu", "Iz železa in stekla"], "a": 2, "ok": "Železna tržnica s steklenimi stenami je iz leta 1916."}, {"q": "Kaj so kroketi?", "o": ["Ocvrte kroglice s kremastim nadevom", "Sladoled", "Juha"], "a": 0, "ok": "Znotraj so mehki in kremasti, zunaj hrustljavi."}, {"q": "Iz česa je španska tortilja?", "o": ["Iz čokolade", "Iz jajc in krompirja", "Iz riža"], "a": 1, "ok": "Tortilla de patatas je debela omleta s krompirjem."}], "facts": ["Tržnico so leta 2009 prenovili in jo spremenili v prostor za hrano.", "Španska tortilja je iz jajc, krompirja in pogosto čebule."]}, "campana": {"quiz": [{"q": "Koliko krakov in lovk ima lignji?", "o": ["8", "10", "2"], "a": 1, "ok": "Lignji ima 8 krakov in 2 dolgi lovki."}, {"q": "Madrid je daleč od morja. Kateri sendvič je vseeno najbolj madridski?", "o": ["Sendvič z ocvrtimi lignji", "Sendvič s sladoledom", "Sendvič z banano"], "a": 0, "ok": "Bocadillo de calamares je madridska klasika."}], "facts": ["Lignji imajo tri srca in modro kri.", "Bocadillo de calamares je tipičen madridski sendvič, čeprav je Madrid daleč od morja."]}, "labra": {"quiz": [{"q": "Kaj je bacalao?", "o": ["Vrsta sira", "Polenovka, riba", "Nogometni udarec"], "a": 1, "ok": "Bacalao je posušena in nasoljena riba trska."}, {"q": "Ugani: koliko let je star ta bar?", "o": ["Več kot 160", "10", "1.000"], "a": 0, "ok": "Casa Labra deluje od leta 1860."}], "facts": ["Leta 1879 so v tem baru ustanovili špansko politično stranko PSOE.", "Polenovko pred cvrtjem dolgo namakajo v vodi, da ni preveč slana."]}, "sanildefonso": {"quiz": [{"q": "Preštej: koliko nadstropij ima tržnica?", "o": ["1", "3", "10"], "a": 1, "ok": "Tri nadstropja stojnic s hrano."}, {"q": "Kaj je street food?", "o": ["Hrana, ki jo ješ hitro, kot na ulici", "Hrana za pse", "Hrana v vesolju"], "a": 0, "ok": "Street food pomeni ulična hrana: burgerji, pica, tacos."}], "facts": ["Ulica Fuencarral, kjer je tržnica, je ena najbolj znanih nakupovalnih ulic v Madridu."]}, "sananton": {"quiz": [{"q": "Sveti Anton, po katerem se imenuje tržnica, je zavetnik ...", "o": ["nogometašev", "živali", "kuharjev"], "a": 1, "ok": "Vsako leto 17. januarja pred bližnjo cerkvijo San Antón blagoslovijo pse, mačke in druge ljubljenčke."}, {"q": "Kje lahko na tej tržnici ješ z razgledom?", "o": ["Na strešni terasi", "V kleti", "Na drevesu"], "a": 0, "ok": "Na vrhu stavbe je terasa."}], "facts": ["Vsakega 17. januarja pred cerkvijo San Antón na ulici Hortaleza blagoslovijo hišne ljubljenčke."]}, "vips": {"quiz": [{"q": "Kaj so tortitas v VIPS-u?", "o": ["Palačinke", "Sirove torte", "Tortilje"], "a": 0, "ok": "Tortitas so debele ameriške palačinke, pogosto s sirupom."}, {"q": "V katerem mestu so odprli prvi VIPS?", "o": ["V Londonu", "V Barceloni", "V Madridu"], "a": 2, "ok": "Prvi VIPS so odprli leta 1969 v Madridu."}], "facts": ["Prvi VIPS so odprli leta 1969 v Madridu."]}, "brillante": {"quiz": [{"q": "Katera velika železniška postaja je tik ob baru?", "o": ["Wembley", "Atocha", "Ljubljana"], "a": 1, "ok": "Atocha je največja železniška postaja v Madridu."}, {"q": "Ugani: kako hitro vozi hitri vlak AVE, ki odpelje z Atoche?", "o": ["Do okoli 300 km/h", "Do 30 km/h", "Do 3.000 km/h"], "a": 0, "ok": "Vlak AVE vozi do okoli 300 km na uro."}], "facts": ["Prvi vlak s postaje Atocha je odpeljal leta 1851, do Aranjueza."]}, "gines": {"quiz": [{"q": "Kako se v Madridu reče debelejšim churrosom?", "o": ["Pelotas", "Porras", "Patatas"], "a": 1, "ok": "Porras so debelejši in mehkejši od tankih churrosov."}, {"q": "Kaj narediš s churrosom, preden ga poješ?", "o": ["Ga posoliš s poprom", "Ga zamrzneš", "Ga pomočiš v vročo čokolado"], "a": 2, "ok": "Gosta vroča čokolada je za pomakanje, ne za pitje po požirkih."}, {"q": "Zakaj imajo churrosi robove?", "o": ["Testo stisnejo skozi cev v obliki zvezde", "Ker jih režejo z nožem", "Ker so iz kruha"], "a": 0, "ok": "Robovi naredijo churros lepo hrustljav."}], "facts": ["Churrose ocvrejo v vročem olju. Testo stisnejo skozi cev v obliki zvezde, zato imajo robove.", "Debelejšim churrosom v Madridu pravijo porras."]}, "valor": {"quiz": [{"q": "Iz česa delajo čokolado?", "o": ["Iz kave", "Iz kostanja", "Iz zrn kakavovca"], "a": 2, "ok": "Kakavova zrna rastejo v velikih strokih na drevesu kakavovec."}, {"q": "Ugani: od kdaj delajo čokolado Valor?", "o": ["Od leta 1881", "Od leta 1981", "Od leta 2021"], "a": 0, "ok": "Valeriano López jo je začel delati leta 1881 v mestu Villajoyosa ob morju."}], "facts": ["Čokolado Valor delajo od leta 1881 v mestu Villajoyosa ob Sredozemskem morju.", "Kakavovec raste samo v toplih krajih blizu ekvatorja."]}, "mallorquina": {"quiz": [{"q": "Zakaj se slaščičarna imenuje La Mallorquina?", "o": ["Ker prodaja jabolka", "Ustanovitelji so bili z otoka Mallorca", "Ker je majhna"], "a": 1, "ok": "Mallorca je španski otok v Sredozemskem morju."}, {"q": "Kakšne oblike je ensaimada, slaščica z Mallorce?", "o": ["Spirala kot polžja hišica", "Kocka", "Zvezda"], "a": 0, "ok": "Ensaimada je zavita v spiralo in posuta s sladkorjem v prahu."}], "facts": ["Ustanovitelji leta 1894 so bili z Mallorce. Najbolj slavna je bila ensaimada, spiralna slaščica z otoka."]}, "glu": {"quiz": [{"q": "V sladoledarni so polarni medvedi in pingvini. Ali se srečajo v naravi?", "o": ["Ne, živijo na različnih koncih sveta", "Da, vsak dan", "Samo ob nedeljah"], "a": 0, "ok": "Polarni medvedi živijo na severu, pingvini pa na jugu Zemlje."}, {"q": "Kako se po špansko reče sladoled?", "o": ["Hola", "Helado", "Hielo"], "a": 1, "ok": "Helado je sladoled. Hielo pomeni led, hola pa živijo."}], "facts": ["Polarni medvedi živijo na Arktiki, pingvini pa na južni polobli, večina okoli Antarktike.", "Bližnji trg Plaza del Dos de Mayo se imenuje po uporu 2. maja 1808."]}};window.PLACES.forEach(p=>{const x=Q[p.id];if(!x)return;p.quiz=(p.quiz||[]).concat(x.quiz||[]);p.facts=(p.facts||[]).concat((x.facts||[]).filter(f=>!(p.facts||[]).includes(f)));});})();
