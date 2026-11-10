@@ -70,7 +70,20 @@ const qWords = q => {
 };
 const matchWords = (p, ws) => { const t = searchText(p); return ws.every(({ w, alt }) => t.includes(' ' + w) || alt.some(a => t.includes(' ' + a))); };
 const matchQ = (p, q) => matchWords(p, qWords(q));
-const nameHit = (p, ws) => { const n = ' ' + norm(p.name); return ws.every(({ w }) => n.includes(w)); };
+// relevance: where it matches (name > description/food > rest) and how (whole word / keyword > only the start of a longer word, e.g. pica in Picasso)
+const fieldTx = x => ' ' + norm(x).replace(/[^a-z0-9]+/g, ' ') + ' ';
+const SFX = new Map();
+const fieldsOf = p => { let f = SFX.get(p.id); if (!f) { f = [[fieldTx(p.name), 4], [fieldTx([p.what, p.q, p.food && Object.values(p.food).join(' '), CATS[p.cat] && CATS[p.cat][1]].join(' ')), 2], [searchText(p), 1]]; SFX.set(p.id, f); } return f; };
+const scoreQ = (p, ws) => ws.reduce((sum, { w, alt }) => {
+  const whole = new RegExp(' ' + w + '[a-z]{0,2} ');
+  let best = 0;
+  for (const [t, wt] of fieldsOf(p)) {
+    if (whole.test(t)) best = Math.max(best, 3 * wt);
+    else if (alt.some(a => t.includes(' ' + a))) best = Math.max(best, 2.5 * wt);
+    else if (t.includes(' ' + w)) best = Math.max(best, 0.5 * wt);
+  }
+  return sum + best + (fieldsOf(p)[0][0].includes(' ' + w) ? 1 : 0);
+}, 0);
 let skip = LS.get('skip', { at: 0, ids: [] }); if (Date.now() - skip.at > 3 * 3600000) skip = { at: Date.now(), ids: [] };
 
 /* ---------- helpers ---------- */
@@ -517,8 +530,8 @@ function ideaList() {
   const h = here(), now = new Date(), want = LS.get('want', []), ws = ideaQ.trim() ? qWords(ideaQ) : null;
   let list = PL.filter(p => !(p.to && now > new Date(p.to + 'T23:59'))).map(p => ({ p, d: dist(h.ll, p.ll), st: openState(p, now) }));
   list = list.filter(r => (ideaCat === 'vse' || r.p.cat === ideaCat || (ideaCat === 'nogomet' && r.p.fb) || (ideaCat === 'zelje' && want.includes(r.p.id)) || (ideaCat === 'mama' && (r.p.mama || 0) >= 2)) && (!ideaIn || r.p.set === 'in') && (!ideaOpen || r.st.open) && (ideaArea === 'vse' || areaOf(r.p).id === ideaArea) && (!ws || matchWords(r.p, ws)));
-  if (ws) list.forEach(r => { r.n = nameHit(r.p, ws) ? 0 : 1; });
-  list.sort((a, b) => (ws ? a.n - b.n : 0) || a.d - b.d);
+  if (ws) list.forEach(r => { r.n = scoreQ(r.p, ws); });
+  list.sort((a, b) => (ws ? b.n - a.n : 0) || a.d - b.d);
   return list;
 }
 function vIdeje() {
@@ -748,7 +761,7 @@ document.addEventListener('input', ev => {
   if (ev.target.id !== 'mq') return;
   const q = ev.target.value.trim(), box = $('#mres');
   if (!box) return;
-  box.innerHTML = q.length < 2 ? '' : PL.filter(p => matchQ(p, q)).slice(0, 6).map(p => `<button data-mapfind="${p.id}">${CATS[p.cat][0]} ${esc(p.name)}</button>`).join('') || '<small>Ni zadetkov</small>';
+  box.innerHTML = q.length < 2 ? '' : (ws => PL.filter(p => matchWords(p, ws)).map(p => [p, scoreQ(p, ws)]).sort((a, b) => b[1] - a[1]).map(x => x[0]))(qWords(q)).slice(0, 6).map(p => `<button data-mapfind="${p.id}">${CATS[p.cat][0]} ${esc(p.name)}</button>`).join('') || '<small>Ni zadetkov</small>';
 });
 function refreshIdeas() {
   const box = $('#ideaOut'); if (!box) return;
