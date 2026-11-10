@@ -10,7 +10,7 @@ const LS = {
 const MADRID = [40.4168, -3.7038];
 let pos = null, wx = LS.get('wx', null), wmode = LS.get('wmode', 'auto'), askCtx = null, deferredInstall = null;
 let mood = LS.get('mood', 'vse'), tired = LS.get('tired', false), budget = LS.get('budget', 120), focus = null, factI = 0;
-let ideaCat = 'vse', ideaIn = false, ideaOpen = false, ideaArea = 'vse', ideaQ = '', mapFocusId = null;
+let ideaFor = [], ideaCats = [], ideaIn = false, ideaOpen = false, ideaArea = 'vse', ideaQ = '', mapFocusId = null;
 const norm = x => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 /* search: own words match anywhere; keywords expand to related words (word start) */
 const KW = [
@@ -224,6 +224,11 @@ function nextAnchor() { const now = Date.now(); return anchors().find(a => a.t.g
 
 /* ---------- suggestion engine ---------- */
 const CATS = { ogled: ['🏛️', 'Ogled'], muzej: ['🖼️', 'Muzej'], nogomet: ['⚽', 'Nogomet'], igra: ['🛝', 'Igra in park'], razgled: ['🌇', 'Razgled'], hrana: ['🍽️', 'Hrana'], zajtrk: ['☕', 'Zajtrk in kava'], sladko: ['🍦', 'Sladko'], trgovina: ['🛍️', 'Trgovina'], dogodek: ['🎟️', 'Dogodek'] };
+const FOR = {
+  zelje: { l: '⭐ Želje', ok: (p, want) => want.includes(p.id) },
+  mama: { l: '💐 Za mamo', ok: p => (p.mama || 0) >= 2 },
+  otrok: { l: '🧒 Za otroka', ok: p => (p.kid || 0) >= 3 }
+};
 const MOODS = [['vse', '✨', 'Presenetite nas'], ['jesti', '🍽️', 'Lačni smo'], ['zajtrk', '☕', 'Zajtrk in kava'], ['sladko', '🍦', 'Nekaj sladkega'], ['nogomet', '⚽', 'Nogomet'], ['igra', '🛝', 'Igra in tek'], ['streha', '☔', 'Pod streho'], ['ogled', '🏛️', 'Ogledi'], ['dogodek', '🎟️', 'Dogodki'], ['mama', '💐', 'Za mamo']];
 const moodOk = (p, md) => ({ vse: true, jesti: p.cat === 'hrana', zajtrk: p.cat === 'zajtrk', dogodek: p.cat === 'dogodek', mama: (p.mama || 0) >= 2, sladko: p.cat === 'sladko', nogomet: !!p.fb, igra: p.cat === 'igra' || (p.tags || []).includes('igra'), ogled: ['ogled', 'muzej', 'razgled'].includes(p.cat), streha: p.set === 'in' }[md]);
 function suggest(md = mood) {
@@ -529,18 +534,19 @@ function vZdaj() {
 function ideaList() {
   const h = here(), now = new Date(), want = LS.get('want', []), ws = ideaQ.trim() ? qWords(ideaQ) : null;
   let list = PL.filter(p => !(p.to && now > new Date(p.to + 'T23:59'))).map(p => ({ p, d: dist(h.ll, p.ll), st: openState(p, now) }));
-  list = list.filter(r => (ideaCat === 'vse' || r.p.cat === ideaCat || (ideaCat === 'nogomet' && r.p.fb) || (ideaCat === 'zelje' && want.includes(r.p.id)) || (ideaCat === 'mama' && (r.p.mama || 0) >= 2)) && (!ideaIn || r.p.set === 'in') && (!ideaOpen || r.st.open) && (ideaArea === 'vse' || areaOf(r.p).id === ideaArea) && (!ws || matchWords(r.p, ws)));
+  list = list.filter(r => ideaFor.every(k => FOR[k].ok(r.p, want)) && (!ideaCats.length || ideaCats.some(c => r.p.cat === c || (c === 'nogomet' && r.p.fb))) && (!ideaIn || r.p.set === 'in') && (!ideaOpen || r.st.open) && (ideaArea === 'vse' || areaOf(r.p).id === ideaArea) && (!ws || matchWords(r.p, ws)));
   if (ws) list.forEach(r => { r.n = scoreQ(r.p, ws); });
   list.sort((a, b) => (ws ? b.n - a.n : 0) || a.d - b.d);
   return list;
 }
 function vIdeje() {
   const want = LS.get('want', []);
-  const cats = [['vse', 'Vse'], ['zelje', '⭐ Želje'], ['mama', '💐 Za mamo']].concat(Object.entries(CATS).map(([k, v]) => [k, v[0] + ' ' + v[1]]));
+  const cats = Object.entries(CATS).map(([k, v]) => [k, v[0] + ' ' + v[1]]), any = ideaFor.length || ideaCats.length;
   return `<section class="page wrap">
     <div><span class="eyebrow">${PL.length} krajev · od ${esc(whereText())}</span><h1 class="title">Ideje</h1><p style="margin:4px 0 0;color:var(--muted)">Vse, kar je v aplikaciji. Označi ⭐, kar si želite; predlagalnik jih postavi višje.</p></div>
     <div class="search"><span>🔎</span><input type="search" id="iq" placeholder="Išči: skywalk, churros, pica, Retiro …" value="${esc(ideaQ)}" autocomplete="off" enterkeyhint="search"></div>
-    <div class="chips">${cats.map(([k, l]) => `<button class="chip ${ideaCat === k ? 'on' : ''}" data-icat="${k}">${l}${k === 'zelje' ? ' ' + want.length : ''}</button>`).join('')}</div>
+    <div class="chips"><button class="chip ${any ? '' : 'on'}" data-icat="vse">Vse</button>${Object.entries(FOR).map(([k, f]) => `<button class="chip for ${ideaFor.includes(k) ? 'on' : ''}" data-ifor="${k}" aria-pressed="${ideaFor.includes(k)}">${f.l}${k === 'zelje' ? ' ' + want.length : ''}</button>`).join('')}<span class="chipsep" aria-hidden="true"></span>${cats.map(([k, l]) => `<button class="chip ${ideaCats.includes(k) ? 'on' : ''}" data-icat="${k}" aria-pressed="${ideaCats.includes(k)}">${l}</button>`).join('')}</div>
+    <p class="chiphint">${any ? esc([...ideaFor.map(k => FOR[k].l), ideaCats.length ? ideaCats.map(c => CATS[c][1]).join(' ali ') : ''].filter(Boolean).join(' + ')) + ' · <button class="tag" data-icat="vse">počisti</button>' : 'Izbereš lahko več hkrati, na primer 💐 Za mamo + 🍽️ Hrana.'}</p>
     <div class="chips scroll"><button class="chip ${ideaArea === 'vse' ? 'on' : ''}" data-iarea="vse">📍 Vsa področja</button>${AREAS.concat([{ id: 'drugo', short: 'Drugje' }]).filter(a => PL.some(p => areaOf(p).id === a.id)).map(a => `<button class="chip ${ideaArea === a.id ? 'on' : ''}" data-iarea="${a.id}">${esc(a.short)} <small>${PL.filter(p => areaOf(p).id === a.id).length}</small></button>`).join('')}</div>
     <div class="row"><button class="toggle" data-act="iin" aria-pressed="${ideaIn}"><span>Pod streho</span><span class="sw"></span></button><button class="toggle" data-act="iopen" aria-pressed="${ideaOpen}"><span>Odprto zdaj</span><span class="sw"></span></button></div>
     <div id="ideaOut">${ideaOut()}</div>
@@ -563,8 +569,8 @@ function ideaBody(p, d, st) {
 }
 function ideaOut() {
   const list = ideaList(), now = new Date(), done = LS.get('done', []), want = LS.get('want', []), q = ideaQ.trim();
-  return `${q ? '' : wishCard()}
-    ${q ? `<p class="qcount">${list.length ? 'Najdeno: ' + list.length : 'Nič ne ustreza iskanju' + (ideaCat !== 'vse' || ideaArea !== 'vse' || ideaIn || ideaOpen ? '. Filtri so vklopljeni, <button class="tag" data-act="ifreset">počisti filtre</button>' : '.')}</p>` : ''}
+  return `${q || ideaFor.length || ideaCats.length ? '' : wishCard()}
+    ${q ? `<p class="qcount">${list.length ? 'Najdeno: ' + list.length : 'Nič ne ustreza iskanju' + (ideaFor.length || ideaCats.length || ideaArea !== 'vse' || ideaIn || ideaOpen ? '. Filtri so vklopljeni, <button class="tag" data-act="ifreset">počisti filtre</button>' : '.')}</p>` : ''}
     <div class="ideas">${list.map(({ p, d, st }) => `<details class="card idea" data-id="${p.id}" ${q && list.length <= 2 ? 'open' : ''}><summary>
         ${p.img ? `<img src="${p.img[0]}" alt="" loading="lazy">` : `<span class="ic c-${p.cat}">${CATS[p.cat][0]}</span>`}
         <span class="tx"><b>${want.includes(p.id) ? '⭐ ' : ''}${esc(p.name)}${done.includes(p.id) ? ' ✔' : ''}</b><small>${esc(p.what)}</small><small class="${st.open ? 'op' : 'cl'}">${esc(areaOf(p).short)} · ${st.open ? 'odprto' : st.opensIn != null ? 'odpre ob ' + fmtT(now.getHours() * 60 + now.getMinutes() + st.opensIn) : /^odpre se/.test(st.text) ? st.text : 'zdaj zaprto'} · ${fmtDist(d)}</small></span></summary>
@@ -785,7 +791,7 @@ document.addEventListener('click', async ev => {
   const mw = ev.target.closest('a[data-mapwant]');
   if (mw) { ev.preventDefault(); const on = toggleList('want', mw.dataset.mapwant); mw.textContent = on ? '⭐ v željah' : '☆ Želimo'; toast(on ? '⭐ Na seznamu želja' : 'Odstranjeno iz želja'); return; }
   const iw = ev.target.closest('a[data-iwish]');
-  if (iw) { ideaCat = 'zelje'; }
+  if (iw) { ideaFor = ['zelje']; ideaCats = []; }
   if (mf) { ev.preventDefault(); focus = mf.dataset.mapfocus; mood = 'vse'; LS.set('mood', mood); location.hash = '#zdaj'; return; }
   const go = ev.target.closest('a[data-go]');
   if (go) { const l = LS.get('done', []); if (!l.includes(go.dataset.go)) { l.push(go.dataset.go); LS.set('done', l); } focus = null; setTimeout(() => render(true), 400); return; }
@@ -809,7 +815,8 @@ document.addEventListener('click', async ev => {
   if (t.dataset.mapfind) { mapFocusId = t.dataset.mapfind; mapCat = 'vse'; render(true); return; }
   if (t.dataset.mapgo) { mapFocusId = t.dataset.mapgo; mapCat = 'vse'; location.hash = '#zemljevid'; return; }
   if (t.dataset.mcat) { mapCat = t.dataset.mcat; render(true); return; }
-  if (t.dataset.icat) { ideaCat = t.dataset.icat; render(true); return; }
+  if (t.dataset.icat) { const c = t.dataset.icat; if (c === 'vse') { ideaFor = []; ideaCats = []; } else ideaCats = ideaCats.includes(c) ? ideaCats.filter(x => x !== c) : ideaCats.concat(c); render(true); return; }
+  if (t.dataset.ifor) { const c = t.dataset.ifor; ideaFor = ideaFor.includes(c) ? ideaFor.filter(x => x !== c) : ideaFor.concat(c); render(true); return; }
   if (t.dataset.say) { speak(t.dataset.say); return; }
   if (t.dataset.copy) { copy(t.dataset.copy); return; }
   if (t.dataset.preset !== undefined) { const p = PRESET_ANCHORS[+t.dataset.preset], l = LS.get('anchors', []); l.push(p); LS.set('anchors', l); toast('Dodano'); render(true); return; }
@@ -833,7 +840,7 @@ document.addEventListener('click', async ev => {
     case 'rest': LS.set('rest', !LS.get('rest', true)); render(true); break;
     case 'unskipday': LS.del('skipday'); render(true); break;
     case 'iqclear': ideaQ = ''; render(true); $('#iq')?.focus(); break;
-    case 'ifreset': ideaCat = 'vse'; ideaArea = 'vse'; ideaIn = false; ideaOpen = false; render(true); break;
+    case 'ifreset': ideaFor = []; ideaCats = []; ideaArea = 'vse'; ideaIn = false; ideaOpen = false; render(true); break;
     case 'nextfact': factI++; render(true); break;
     case 'locate': toast('Iščem lokacijo …'); if (!(await getPos())) toast('Lokacije ni bilo mogoče dobiti. Preveri dovoljenje.'); else { LS.del('area'); if (!gpsInMadrid()) toast('Telefon ni v Madridu, izberi okolico'); } loadWeather(true); render(true); break;
     case 'askclose': askCtx = null; render(true); break;

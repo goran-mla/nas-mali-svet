@@ -254,3 +254,8 @@ input[type=datetime-local],select{font:inherit;width:100%;border:1px solid var(-
 .mres:empty{display:none}
 .mres button{border:0;border-bottom:1px solid var(--line);background:var(--card);text-align:left;padding:10px 12px;font-weight:800;font-size:14px;width:auto;height:auto;border-radius:0}
 .mres small{padding:10px 12px;color:var(--muted)}
+.chipsep{width:1px;align-self:stretch;background:var(--line);margin:2px 2px}
+.chip.for{border-style:dashed}
+.chip.for.on{border-style:solid}
+.chiphint{margin:-2px 0 0;font-size:13px;color:var(--muted)}
+.chiphint .tag{margin-left:4px}
