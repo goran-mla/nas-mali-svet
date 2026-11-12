@@ -612,14 +612,48 @@ function wishCard() {
 }
 
 /* ---------- map ---------- */
-let map = null, mapLayer = null, mapCat = 'vse';
+let map = null, mapLayer = null, mapCat = 'vse', mapMarkers = {}, meDot = null, meRing = null, followMe = false, watchId = null, nearAt = null;
+/* live location while the map is open: blue dot + accuracy ring, nearest list refreshes as you walk */
+function startWatch() {
+  if (watchId != null || !navigator.geolocation) return;
+  watchId = navigator.geolocation.watchPosition(p => {
+    const first = !gpsInMadrid();
+    pos = { lat: p.coords.latitude, lon: p.coords.longitude, acc: Math.round(p.coords.accuracy), at: Date.now() };
+    if (gpsInMadrid()) { if (LS.get('area', null)) LS.del('area'); drawMe(first); }
+  }, () => { stopWatch(); toast('Lokacije ni bilo mogoče dobiti. Preveri dovoljenje za lokacijo.'); }, { enableHighAccuracy: true, maximumAge: 10000, timeout: 30000 });
+}
+function stopWatch() { if (watchId != null) { try { navigator.geolocation.clearWatch(watchId); } catch (e) {} watchId = null; } }
+function drawMe(first) {
+  if (!map || !gpsInMadrid()) return;
+  const ll = [pos.lat, pos.lon];
+  if (!meDot) {
+    meRing = L.circle(ll, { radius: pos.acc, color: '#2E6D9B', weight: 1, fillColor: '#2E6D9B', fillOpacity: .12, interactive: false }).addTo(map);
+    meDot = L.circleMarker(ll, { radius: 9, color: '#fff', weight: 3, fillColor: '#2E6D9B', fillOpacity: 1 }).addTo(map).bindPopup('Tukaj ste');
+  } else { meDot.setLatLng(ll); meRing.setLatLng(ll).setRadius(pos.acc); }
+  if (first || followMe) map.setView(ll, Math.max(map.getZoom() || 15, 15), { animate: false });
+  if (!nearAt || dist(nearAt, ll) > 30) refreshNear();
+  const b = $('#mapme'); if (b) b.textContent = '📍 Sledim ±' + pos.acc + ' m';
+}
+function nearList() {
+  const h = here(), now = new Date();
+  const L0 = PL.filter(p => (mapCat === 'vse' || p.cat === mapCat) && !(p.to && now > new Date(p.to + 'T23:59'))).map(p => ({ p, d: dist(h.ll, p.ll), st: openState(p, now) }));
+  // nearest first; something closed counts as if it were a bit further away (soon open: +300 m, closed: +1.5 km)
+  const eff = r => r.d + (r.st.open ? 0 : r.st.opensIn != null && r.st.opensIn <= 60 ? 300 : 1500);
+  const rows = L0.sort((a, b) => eff(a) - eff(b)).slice(0, 6);
+  const label = h.src === 'gps' ? 'Najbližje vam' : 'Najbližje od: ' + whereText().replace(/^v okolici: /, '');
+  return `<span class="eyebrow">${esc(label)}${mapCat === 'vse' ? '' : ' · ' + CATS[mapCat][1]}</span>
+    <div class="nlist">${rows.map(({ p, d, st }) => `<button data-mapnear="${p.id}"><span class="ic c-${p.cat}">${CATS[p.cat][0]}</span><span class="tx"><b>${esc(p.name)}</b><small class="${st.open ? 'op' : 'cl'}">${st.open ? 'odprto' : st.opensIn != null ? 'odpre ob ' + fmtT(now.getHours() * 60 + now.getMinutes() + st.opensIn) : esc(st.text || 'zaprto')} · ${walkMin(d) <= 25 ? '🚶 ' + walkMin(d) + ' min' : fmtDist(d)}</small></span></button>`).join('') || '<small>Ni krajev v tej kategoriji.</small>'}</div>
+    ${h.src === 'gps' ? '' : '<small class="nhint">Ko ste v Madridu, pritisnite 📍 Kje sem in seznam se računa od vas.</small>'}`;
+}
+function refreshNear() { const b = $('#mnear'); if (!b) return; b.innerHTML = nearList(); nearAt = gpsInMadrid() ? [pos.lat, pos.lon] : null; }
 function vZemljevid() {
   const cats = [['vse', 'Vse']].concat(Object.entries(CATS).map(([k, v]) => [k, v[0] + ' ' + v[1]]));
   return `<section class="page wrap mappage">
     <div class="search"><span>🔎</span><input type="search" id="mq" placeholder="Najdi na zemljevidu …" autocomplete="off" enterkeyhint="search"><div class="mres" id="mres"></div></div>
     <div class="chips scroll">${cats.map(([k, l]) => `<button class="chip ${mapCat === k ? 'on' : ''}" data-mcat="${k}">${l}</button>`).join('')}</div>
     <div id="map" class="map"></div>
-    <div class="row"><button class="btn" data-act="mapme">📍 Kje sem</button><button class="btn" data-act="maphotel">🏨 Hotel</button>${hotelBtn(false) ? `<a class="btn primary" target="_blank" rel="noopener" href="${route(HOTEL.ll, 'transit')}">Pot v hotel</a>` : ''}</div>
+    <div class="row"><button class="btn" id="mapme" data-act="mapme">📍 Kje sem</button><button class="btn" data-act="maphotel">🏨 Hotel</button>${hotelBtn(false) ? `<a class="btn primary" target="_blank" rel="noopener" href="${route(HOTEL.ll, 'transit')}">Pot v hotel</a>` : ''}</div>
+    <div class="card"><div class="body" id="mnear">${nearList()}</div></div>
     <p style="margin:0;font-size:12px;color:var(--muted)">Podlaga © OpenStreetMap. Brez povezave se zemljevid ne naloži, seznam v Ideje pa dela.</p>
   </section>`;
 }
@@ -627,6 +661,7 @@ function initMap() {
   const el = $('#map'); if (!el) return;
   if (!window.L) { el.innerHTML = '<p style="padding:16px">Zemljevid potrebuje povezavo.</p>'; return; }
   if (map) { map.remove(); map = null; }
+  meDot = meRing = null; mapMarkers = {}; nearAt = null;
   const h = here();
   map = L.map(el, { zoomControl: true });
   if (h.src === 'gps') map.setView(h.ll, 15); else map.fitBounds([[40.4150, -3.7085], HOTEL.ll], { padding: [24, 24] });
@@ -635,12 +670,14 @@ function initMap() {
   const now = new Date();
   PL.filter(p => (mapCat === 'vse' || p.cat === mapCat) && !(p.to && now > new Date(p.to + 'T23:59'))).forEach(p => {
     const st = openState(p, now);
-    const m = L.marker(p.ll, { icon: L.divIcon({ className: 'pin c-' + p.cat + (st.open ? '' : ' shut'), html: CATS[p.cat][0], iconSize: [34, 34], iconAnchor: [17, 17] }) }).addTo(mapLayer);
+    const m = mapMarkers[p.id] = L.marker(p.ll, { icon: L.divIcon({ className: 'pin c-' + p.cat + (st.open ? '' : ' shut'), html: CATS[p.cat][0], iconSize: [34, 34], iconAnchor: [17, 17] }) }).addTo(mapLayer);
     if (p.id === mapFocusId) setTimeout(() => { map.setView(p.ll, 16); m.openPopup(); mapFocusId = null; }, 50);
     m.bindPopup(`<b>${esc(p.name)}</b><br><small>${esc(p.what)}</small><br><small>${st.open ? '🟢 odprto' : '🔴 ' + esc(st.text || 'zdaj zaprto')}</small><br><a href="${route(p.ll, walkMin(dist(h.ll, p.ll)) > 22 ? 'transit' : 'walking')}" target="_blank" rel="noopener">🧭 Pot</a> · <a href="#" data-mapfocus="${p.id}">Predlagaj to</a> · <a href="#" data-mapwant="${p.id}">${LS.get('want', []).includes(p.id) ? '⭐ v željah' : '☆ Želimo'}</a>`);
   });
   L.marker(HOTEL.ll, { zIndexOffset: 1000, icon: L.divIcon({ className: 'pin hotel', html: '🏨', iconSize: [44, 44], iconAnchor: [22, 22] }) }).addTo(map).bindPopup(`<b>Naš hotel</b><br>${esc(HOTEL.name)}<br><small>${esc(HOTEL.addr)}</small>`);
-  if (gpsInMadrid()) L.circleMarker([pos.lat, pos.lon], { radius: 9, color: '#fff', weight: 3, fillColor: '#2E6D9B', fillOpacity: 1 }).addTo(map).bindPopup('Tukaj ste');
+  map.on('dragstart', () => { followMe = false; const b = $('#mapme'); if (b && watchId != null) b.textContent = '📍 Kje sem'; });
+  drawMe(false);
+  try { navigator.permissions.query({ name: 'geolocation' }).then(s => { if (s.state === 'granted') startWatch(); }); } catch (e) {}
 }
 
 /* ---------- Prado game ---------- */
@@ -746,7 +783,7 @@ function render(keepScroll) {
   const open = keepScroll ? [...document.querySelectorAll('details[open][data-id]')].map(d => d.dataset.id) : [];
   $('#app').innerHTML = VIEWS[v]();
   open.forEach(id => { const d = document.querySelector(`details[data-id="${id}"]`); if (d) d.open = true; });
-  if (v === 'zemljevid') initMap(); else if (map) { map.remove(); map = null; }
+  if (v === 'zemljevid') initMap(); else { stopWatch(); followMe = false; if (map) { map.remove(); map = null; } }
   document.querySelectorAll('.tabs a').forEach(a => a.classList.toggle('on', a.dataset.v === (v === 'danes' ? 'zdaj' : v)));
   $('#net').innerHTML = navigator.onLine ? '<span class="dot"></span> povezano' : '<span class="dot off"></span> brez povezave';
   if (keepScroll) window.scrollTo(0, y);
@@ -814,6 +851,7 @@ document.addEventListener('click', async ev => {
   if (t.dataset.skipday) { const x = LS.get('skipday', { d: '', ids: [] }); const ids = x.d === todayKey() ? x.ids : []; ids.push(t.dataset.skipday); LS.set('skipday', { d: todayKey(), ids }); toast('Danes izpuščeno, jutri spet v načrtu'); render(true); return; }
   if (t.dataset.focusGo) { focus = t.dataset.focusGo; mood = 'vse'; LS.set('mood', mood); location.hash = '#zdaj'; return; }
   if (t.dataset.iarea) { ideaArea = t.dataset.iarea; render(true); return; }
+  if (t.dataset.mapnear) { const m = mapMarkers[t.dataset.mapnear], p = byId(t.dataset.mapnear); followMe = false; if (map && m && p) { map.setView(p.ll, 17, { animate: false }); m.openPopup(); window.scrollTo({ top: 0, behavior: 'smooth' }); } return; }
   if (t.dataset.mapfind) { mapFocusId = t.dataset.mapfind; mapCat = 'vse'; render(true); return; }
   if (t.dataset.mapgo) { mapFocusId = t.dataset.mapgo; mapCat = 'vse'; location.hash = '#zemljevid'; return; }
   if (t.dataset.mcat) { mapCat = t.dataset.mcat; render(true); return; }
@@ -836,7 +874,7 @@ document.addEventListener('click', async ev => {
     case 'iin': ideaIn = !ideaIn; render(true); break;
     case 'iopen': ideaOpen = !ideaOpen; render(true); break;
     case 'unskip': skip = { at: Date.now(), ids: [] }; LS.set('skip', skip); render(true); break;
-    case 'mapme': toast('Iščem lokacijo …'); await getPos(); if (gpsInMadrid()) { LS.del('area'); render(true); map && map.setView([pos.lat, pos.lon], 15); } else toast('Niste v Madridu'); break;
+    case 'mapme': followMe = true; if (gpsInMadrid() && watchId != null) { drawMe(true); break; } toast('Iščem lokacijo …'); startWatch(); setTimeout(() => { if (pos && !gpsInMadrid()) toast('Telefon ni v Madridu. Modra pika se pokaže, ko boste tam.'); }, 6000); break;
     case 'maphotel': map && map.setView(HOTEL.ll, 16); break;
     case 'toloc': $('#loc')?.scrollIntoView({ behavior: 'smooth', block: 'center' }); break;
     case 'rest': LS.set('rest', !LS.get('rest', true)); render(true); break;
